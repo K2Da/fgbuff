@@ -30,7 +30,7 @@ class Pool:
             r['challo_id']: r['fg_id'] for r in data['rel_player']
         } if 'rel_player' in data else {}
         self.player_to_participant = {
-            r['fg_id']: r['challo_id'] for r in data['rel_player']
+            (r['tournament_id'], r['fg_id']): r['challo_id'] for r in data['rel_player']
         } if 'rel_player' in data else {}
         self.challo_tournament_to_fg = {
             t['challo_id']: t['id'] for t in data['fg_tournament']
@@ -319,12 +319,16 @@ class Player(Row):
     def sort_key(self):
         return -(self.win + self.lose)
 
+    @property
+    def participant_ids(self):
+        return [pid for tf, pid in self._pool.player_to_participant.items() if tf[1] == self.id]
+
     def maybe(self, name: str):
         def normalize(txt):
             return re.sub('[/\-*_ .\'　|丨│︱]', '', txt.lower())
 
         def trim(txt):
-            return '(^|\]){0}(\(|$|／|\[)'.format(txt)
+            return '(^|\]){0}(\(|$|／|\[|-)'.format(txt)
 
         def separate_team_name(txt):
             spl = normalize(txt).split('|')

@@ -55,7 +55,8 @@ def select_by_player_url(player_url):
 
 def select_for_players():
     return {
-        'fg_player': Table('fg_player').select_all()
+        'fg_player': Table('fg_player').select_all(),
+        'rel_player': Table('rel_player').select_all()
     }
 
 
