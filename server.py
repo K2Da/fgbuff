@@ -37,7 +37,7 @@ def player(player_url):
 
 @app.route('/')
 def index():
-    return cache(request.path, template('index'))
+    return template('index')
 
 if __name__ == '__main__':
     run(app, host=config.host, port=config.port)
