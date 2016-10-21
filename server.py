@@ -1,9 +1,10 @@
-from bottle import Bottle, run, template, request
+import config
+from bottle import Bottle, run, template, request, debug
 from util.cache import cache
 from model.Pool import Pool
-import config
 
 app = Bottle()
+debug(True)
 
 
 @app.route('/players')
@@ -38,4 +39,5 @@ def player(player_url):
 def index():
     return cache(request.path, template('index'))
 
-run(app, host=config.host, port=config.port)
+if __name__ == '__main__':
+    run(app, host=config.host, port=config.port)
