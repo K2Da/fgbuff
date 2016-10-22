@@ -7,20 +7,18 @@ challonge.set_credentials(config.challonge_id, config.challonge_api_key)
 ft = Table('fg_tournament')
 for row in ft.select('refresh = %s', (True, )):
     t = challonge.tournaments.show(row['challo_url'])
-    ct = Table('challo_tournament')
-    ct.delete('id = %s', (t['id'],))
 
     cp = Table('challo_participant')
-    cp.delete('tournament_id = %s', (t['id'],))
+    cp.delete('tournament_id = %s', (row['id'],))
     participants = []
     for p in challonge.participants.index(t['id']):
         participants.append(p['id'])
-        cp.insert([p['id'], t['id'], p['name'], p['final-rank']])
+        cp.insert([p['id'], row['id'], p['name'], p['final-rank']])
 
     cm = Table('challo_match')
-    cm.delete('tournament_id = %s', (t['id'],))
+    cm.delete('tournament_id = %s', (row['id'],))
     groups = {}
-    matches = challonge.matches.index(t['id'], participant_id=45832630)
+    matches = challonge.matches.index(t['id'])
 
     ids = []
     for m in matches:
@@ -59,11 +57,11 @@ for row in ft.select('refresh = %s', (True, )):
 
         if winner is not None and int(winner) > 0:
             cm.insert([
-                m['id'], t['id'], m['round'], p1, p2, winner, m['scores-csv'], group_id
+                m['id'], row['id'], m['round'], p1, p2, winner, m['scores-csv'], group_id
             ])
 
     cg = Table('challo_group')
-    cg.delete('tournament_id = %s', (t['id'],))
+    cg.delete('tournament_id = %s', (row['id'],))
     i = 65
     for group_id, rounds in groups.items():
         if group_id == 0:
@@ -71,9 +69,7 @@ for row in ft.select('refresh = %s', (True, )):
         else:
             name = 'Group {0}'.format(chr(i))
             i += 1
-        cg.insert([group_id if group_id is not None else 0, t['id'], rounds[0], rounds[1], name])
+        cg.insert([group_id if group_id is not None else 0, row['id'], rounds[0], rounds[1], name])
 
-    ct.insert([t['id'], t['name'], t['started-at'], t['tournament-type'], t['full-challonge-url']])
-
-    ft.update(row['id'], {('refresh', False), ('challo_id', t['id'])})
+    ft.update(row['id'], {('refresh', False), ('challo_id', t['id']), ('full_url', t['full-challonge-url'])})
     # ft.update(row['id'], {('challo_id', t['id'])})

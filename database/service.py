@@ -3,22 +3,20 @@ from database.common import Table
 
 def select_by_tournament_id(challo_url):
     fg_tournament = Table('fg_tournament').select_one('challo_url = %s', (challo_url,))
-    challo_id = fg_tournament['challo_id']
+    tournament_id = fg_tournament['id']
     return fg_tournament, {
         'fg_tournament':
             [fg_tournament],
         'fg_player':  # TODO 削る
             Table('fg_player').select_all(),
-        'challo_tournament':
-            Table('challo_tournament').select('id = %s', (challo_id,)),
         'challo_participant':
-            Table('challo_participant').select('tournament_id = %s', (challo_id,)),
+            Table('challo_participant').select('tournament_id = %s', (tournament_id,)),
         'challo_match':
-            Table('challo_match').select('tournament_id = %s', (challo_id,)),
+            Table('challo_match').select('tournament_id = %s', (tournament_id,)),
         'challo_group':
-            Table('challo_group').select('tournament_id = %s', (challo_id,)),
+            Table('challo_group').select('tournament_id = %s', (tournament_id,)),
         'rel_player':
-            Table('rel_player').select('tournament_id = %s', (challo_id,))
+            Table('rel_player').select('tournament_id = %s', (tournament_id,))
     }
 
 
@@ -48,8 +46,6 @@ def select_by_player_url(player_url):
             Table('fg_tournament').select_all(),
         'challo_group':
             Table('challo_group').select_all(),
-        'challo_tournament':
-            Table('challo_tournament').select_all()
     }
 
 
@@ -79,7 +75,6 @@ def select_for_create_vs():
 def select_for_tournaments():
     return {
         'fg_tournament': Table('fg_tournament').select_all(),
-        'challo_tournament': Table('challo_tournament').select_all()
     }
 
 
@@ -109,6 +104,4 @@ def select_for_vs(p1, p2):
             Table('fg_tournament').select_all(),
         'challo_group':
             Table('challo_group').select_all(),
-        'challo_tournament':
-            Table('challo_tournament').select_all()
     }

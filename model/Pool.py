@@ -1,5 +1,5 @@
 import sys
-import re
+from Lib import re
 from database import service
 from typing import Dict, List, Any
 
@@ -10,7 +10,6 @@ class Pool:
         self.fg_tournament = data['fg_tournament'] if 'fg_tournament' in data else []
         self.fg_player = data['fg_player'] if 'fg_player' in data else []
 
-        self.challo_tournament = data['challo_tournament'] if 'challo_tournament' in data else []
         self.challo_participant = data['challo_participant'] if 'challo_participant' in data else []
         self.challo_match = data['challo_match'] if 'challo_match' in data else []
         self.challo_group = data['challo_group'] if 'challo_group' in data else []
@@ -85,13 +84,6 @@ class Row:
 
 
 class Touranament(Row):
-    def __init__(self, pool: Pool, fg_row: Dict[str, Any]):
-        self.challo_row = None
-        for challo in pool.challo_tournament:
-            if challo['id'] == fg_row['challo_id']:
-                self.challo_row = challo
-        super(Touranament, self).__init__(pool, fg_row)
-
     @property
     def name(self):
         return self.get_with_default('name', '-')
@@ -107,10 +99,10 @@ class Touranament(Row):
         return self.get_with_default('challo_url', None)
 
     @property
-    def challonge_link(self):
-        if self.challo_row is None:
-            return ''
-        return '<a href="{0}">challonge</a>'.format(self.challo_row['full_challonge_url'])
+    def tournament_link(self):
+        if self._challo_row['full_url'] is None or len(self._challo_row['full_url']) == 0:
+            return ""
+        return '<a href="{0}">challonge</a>'.format(self.get_with_default('full_url', ''))
 
     @property
     def end_at(self):
@@ -242,7 +234,7 @@ class Match(Row):
 
     @property
     def tournament(self) -> Touranament:
-        return self._pool.tournaments[self._pool.challo_tournament_to_fg[self.tournament_id]]
+        return self._pool.tournaments[self.tournament_id]
 
     @property
     def group(self) -> Group:

@@ -8,7 +8,7 @@
         <td>{{!t.link_or_name}}</a></td>
         <!-- <td>{{t.type}}</td> -->
         <td>{{!t.end_at}}</td>
-        <td>{{!t.challonge_link}}</td>
+        <td>{{!t.tournament_link}}</td>
     </tr>
 % end
 </table>
