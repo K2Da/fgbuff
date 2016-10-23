@@ -70,23 +70,28 @@ class Pool:
 class Row:
     def __init__(self, pool: Pool, challo_row: Dict[str, Any]):
         self._pool = pool
-        self._challo_row = challo_row
+        self._row = challo_row
 
     @property
     def id(self):
-        return self.get_with_default('id', 0)
+        return self.get('id', 0)
 
-    def get_with_default(self, column, default):
-        if self._challo_row is not None and column in self._challo_row and self._challo_row[column] is not None:
-            return self._challo_row[column]
+    def get(self, column, default):
+        if self._row is not None and column in self._row and self._row[column] is not None:
+            return self._row[column]
         else:
             return default
 
 
 class Touranament(Row):
+    link_names = {
+        'challo': 'challonge',
+        'smash': 'smash.gg'
+    }
+
     @property
     def name(self):
-        return self.get_with_default('name', '-')
+        return self.get('name', '-')
 
     @property
     def link_or_name(self):
@@ -96,21 +101,21 @@ class Touranament(Row):
 
     @property
     def challo_url(self):
-        return self.get_with_default('challo_url', None)
+        return self.get('challo_url', None)
 
     @property
     def tournament_link(self):
-        if self._challo_row['full_url'] is None or len(self._challo_row['full_url']) == 0:
+        if self._row['full_url'] is None or len(self._row['full_url']) == 0:
             return ""
-        return '<a href="{0}">challonge</a>'.format(self.get_with_default('full_url', ''))
+        return '<a href="{0}">{1}</a>'.format(self.get('full_url', ''), self.link_names[self._row['source']])
 
     @property
     def end_at(self):
-        return self.get_with_default('end_at', '-')
+        return self.get('end_at', '-')
 
     @property
     def type(self):
-        return self.get_with_default('type', '-')
+        return self.get('type', '-')
 
     @property
     def end_at_desc(self):
@@ -120,23 +125,23 @@ class Touranament(Row):
 class Participant(Row):
     @property
     def name(self):
-        return self.get_with_default('name', '-')
+        return self.get('name', '-')
 
     @property
     def tournament_id(self):
-        return self.get_with_default('tournament_id', 0)
+        return self.get('tournament_id', 0)
 
     @property
     def final_rank(self):
-        return self.get_with_default('final_rank', 0)
+        return self.get('final_rank', 0)
 
     @property
     def rank_for_sort(self):
-        return self.get_with_default('final_rank', sys.maxsize)
+        return self.get('final_rank', sys.maxsize)
 
     @property
     def rank_text(self):
-        return self.get_with_default('final_rank', '-')
+        return self.get('final_rank', '-')
 
     @property
     def player(self):
@@ -156,39 +161,39 @@ class Participant(Row):
 class Group(Row):
     @property
     def min_round(self):
-        return self.get_with_default('min_round', '-1')
+        return self.get('min_round', '-1')
 
     @property
     def max_round(self):
-        return self.get_with_default('max_round', '1')
+        return self.get('max_round', '1')
 
     @property
     def name(self):
-        return self.get_with_default('name', '')
+        return self.get('name', '')
 
 
 class Vs(Row):
     @property
     def player(self):
-        if self._challo_row['player_id'] in self._pool.players:
-            return self._pool.players[self._challo_row['player_id']]
+        if self._row['player_id'] in self._pool.players:
+            return self._pool.players[self._row['player_id']]
         else:
             return Player(self._pool, {})
 
     @property
     def opponent(self):
-        if self._challo_row['opponent_id'] in self._pool.players:
-            return self._pool.players[self._challo_row['opponent_id']]
+        if self._row['opponent_id'] in self._pool.players:
+            return self._pool.players[self._row['opponent_id']]
         else:
             return Player(self._pool, {})
 
     @property
     def win(self):
-        return self.get_with_default('win', 0)
+        return self.get('win', 0)
 
     @property
     def lose(self):
-        return self.get_with_default('lose', 0)
+        return self.get('lose', 0)
 
     @property
     def sort_key(self):
@@ -198,25 +203,25 @@ class Vs(Row):
 class Match(Row):
     @property
     def scores_csv(self):
-        return self._challo_row['scores_csv']
+        return self._row['scores_csv']
 
     @property
     def player1(self):
-        if self._challo_row['player1_id'] in self._pool.participants:
-            return self._pool.participants[self._challo_row['player1_id']]
+        if self._row['player1_id'] in self._pool.participants:
+            return self._pool.participants[self._row['player1_id']]
         else:
             return Participant(self._pool, {})
 
     @property
     def player2(self):
-        if self._challo_row['player2_id'] in self._pool.participants:
-            return self._pool.participants[self._challo_row['player2_id']]
+        if self._row['player2_id'] in self._pool.participants:
+            return self._pool.participants[self._row['player2_id']]
         else:
             return Participant(self._pool, {})
 
     @property
     def round(self):
-        return self._challo_row['round']
+        return self._row['round']
 
     @property
     def sort_key(self):
@@ -255,7 +260,7 @@ class Match(Row):
 
     @property
     def tournament_id(self):
-        return self.get_with_default('tournament_id', 0)
+        return self.get('tournament_id', 0)
 
     @property
     def end_at_desc(self):
@@ -263,15 +268,15 @@ class Match(Row):
 
     @property
     def group_id(self):
-        return self.get_with_default('group_id', 0)
+        return self.get('group_id', 0)
 
     @property
     def p1_win(self):
-        return self.get_with_default('winner_id', -1) == self.player1.id
+        return self.get('winner_id', -1) == self.player1.id
 
     @property
     def p2_win(self):
-        return self.get_with_default('winner_id', -1) == self.player2.id
+        return self.get('winner_id', -1) == self.player2.id
 
 
 class Player(Row):
@@ -281,19 +286,19 @@ class Player(Row):
 
     @property
     def url(self):
-        return self.get_with_default('url', '')
+        return self.get('url', '')
 
     @property
     def name(self):
-        return self.get_with_default('name', '')
+        return self.get('name', '')
 
     @property
     def patterns(self):
-        return self.get_with_default('patterns', '')
+        return self.get('patterns', '')
 
     @property
     def unique(self):
-        return self.get_with_default('unique', '')
+        return self.get('unique', '')
 
     @property
     def link(self):
@@ -301,11 +306,11 @@ class Player(Row):
 
     @property
     def win(self):
-        return self.get_with_default('win', 0)
+        return self.get('win', 0)
 
     @property
     def lose(self):
-        return self.get_with_default('lose', 0)
+        return self.get('lose', 0)
 
     @property
     def sort_key(self):
