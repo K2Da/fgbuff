@@ -1,3 +1,4 @@
 /config.py
 /bottle.py
 __pycache__
+/views/analytics.tpl

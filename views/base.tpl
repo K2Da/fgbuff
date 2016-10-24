@@ -12,6 +12,7 @@
         % end
     </head>
     <body>
+        % include('analytics.tpl')
         <div class="container theme-showcase" role="main">
             <nav class="navbar navbar-light">
                 <div class="collapse navbar-toggleable-xs" id="navbar-header">
