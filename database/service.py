@@ -15,27 +15,21 @@ def select_by_tournament_id(challo_url):
             Table('challo_match').select('tournament_id = %s', (tournament_id,)),
         'challo_group':
             Table('challo_group').select('tournament_id = %s', (tournament_id,)),
-        'rel_player':
-            Table('rel_player').select('tournament_id = %s', (tournament_id,))
     }
 
 
 def select_by_player_url(player_url):
     fg_player = Table('fg_player').select_one('url = %s', (player_url,))
-    rel_player = Table('rel_player').select('fg_id = %s', (fg_player['id'],))
-    challo_participant = Table('challo_participant').select_in('id', [rp['challo_id'] for rp in rel_player])
+    challo_participant = Table('challo_participant').select('player_id = %s', (fg_player['id'],))
     cm = Table('challo_match')
     cp_ids = [cp['id'] for cp in challo_participant]
     challo_match = cm.select_in('player1_id', cp_ids) + cm.select_in('player2_id', cp_ids)
     challo_participant = Table('challo_participant').select_in(
         'id', [cm['player1_id'] for cm in challo_match] + [cm['player2_id'] for cm in challo_match]
     )
-    rel_player = Table('rel_player').select_in('challo_id', [cp['id'] for cp in challo_participant])
     return fg_player['id'], {
         'fg_player':
             Table('fg_player').select_all(),
-        'rel_player':
-            rel_player,
         'rel_vs':
             Table('rel_vs').select('player_id = %s', (fg_player['id'],)),
         'challo_participant':
@@ -52,7 +46,6 @@ def select_by_player_url(player_url):
 def select_for_players():
     return {
         'fg_player': Table('fg_player').select_all(),
-        'rel_player': Table('rel_player').select_all()
     }
 
 
@@ -68,7 +61,6 @@ def select_for_create_vs():
         'fg_player': Table('fg_player').select_all(),
         'challo_match': Table('challo_match').select_all(),
         'challo_participant': Table('challo_participant').select_all(),
-        'rel_player': Table('rel_player').select_all()
     }
 
 
@@ -81,8 +73,7 @@ def select_for_tournaments():
 def select_for_vs(p1, p2):
     player_1 = Table('fg_player').select_one('url = %s', (p1,))
     player_2 = Table('fg_player').select_one('url = %s', (p2,))
-    rel_player = Table('rel_player').select_in('fg_id', [player_1['id'], player_2['id']])
-    challo_participant = Table('challo_participant').select_in('id', [rp['challo_id'] for rp in rel_player])
+    challo_participant = Table('challo_participant').select_in('player_id', [player_1['id'], player_2['id']])
     cm = Table('challo_match')
     cp_ids = [cp['id'] for cp in challo_participant]
     challo_match = cm.select_in('player1_id', cp_ids) + cm.select_in('player2_id', cp_ids)
@@ -94,8 +85,6 @@ def select_for_vs(p1, p2):
     return player_1['id'], player_2['id'], {
         'fg_player':
             [player_1, player_2],
-        'rel_player':
-            rel_player,
         'challo_participant':
             challo_participant,
         'challo_match':

@@ -2,15 +2,15 @@ from database.common import Table
 from model.Pool import Pool
 
 pool = Pool.init_for_create_rel()
-rel = Table('rel_player')
-rel.delete_all()
+cp = Table('challo_participant')
+cp.update_all([('player_id', None)])
 
 i = 0
 for participant in pool.participants.values():
     for player in pool.players.values():
         if player.maybe(participant.name):
             print("{0} -> {1}".format(participant.name, player.name))
-            rel.insert([participant.id, player.id, participant.tournament_id])
+            cp.update(participant.id, [('player_id', player.id)])
             i += 1
 
 print("participants {0}".format(i))
@@ -47,7 +47,7 @@ for player, opponent_dic in vs.items():
 
 
 for player, wl in p.items():
-    Table('fg_player').update(player, {('win', wl[0]), ('lose', wl[1])})
+    Table('fg_player').update(player, [('win', wl[0]), ('lose', wl[1])])
 
 print("vs {0}".format(i))
 

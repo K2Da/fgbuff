@@ -25,12 +25,9 @@ class Pool:
         self.vs = {(v['player_id'], v['opponent_id']): Vs(self, v) for v in self.rel_vs}
 
         # dic
-        self.participant_to_player = {
-            r['challo_id']: r['fg_id'] for r in data['rel_player']
-        } if 'rel_player' in data else {}
         self.player_to_participant = {
-            (r['tournament_id'], r['fg_id']): r['challo_id'] for r in data['rel_player']
-        } if 'rel_player' in data else {}
+            (r['tournament_id'], r['player_id']): r['id'] for r in data['challo_participant']
+        } if 'challo_participant' in data else {}
         self.challo_tournament_to_fg = {
             t['challo_id']: t['id'] for t in data['fg_tournament']
         } if 'fg_tournament' in data else {}
@@ -144,16 +141,20 @@ class Participant(Row):
         return self.get('final_rank', '-')
 
     @property
+    def player_id(self):
+        return self.get('player_id', 0)
+
+    @property
     def player(self):
-        if self.id in self._pool.participant_to_player:
-            return self._pool.players[self._pool.participant_to_player[self.id]]
+        if self.player_id:
+            return self._pool.players[self.player_id]
         else:
             return Player(self._pool, {})
 
     @property
     def link_or_text(self):
-        if self.id in self._pool.participant_to_player:
-            return self._pool.players[self._pool.participant_to_player[self.id]].link
+        if self.player_id:
+            return self._pool.players[self.player_id].link
         else:
             return self.name
 

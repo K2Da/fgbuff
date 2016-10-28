@@ -1,6 +1,8 @@
 import config
-from bottle import Bottle, run, template, request, debug
-from util.cache import cache
+import json
+from util.server import cache, support_datetime_default
+from database import service
+from bottle import Bottle, run, template, request, response, debug, static_file
 from model.Pool import Pool
 
 app = Bottle()
@@ -35,9 +37,21 @@ def player(player_url):
     return cache(request.path, template('player', pool=pool, player_id=player_id))
 
 
+@app.route('/static/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root='./static')
+
+
 @app.route('/')
 def index():
     return template('index')
+
+
+@app.route('/api/tournament/<url>')
+def tournament_api(url):
+    response.set_header('Content-Type', 'application/json')
+    return json.dumps(service.select_by_tournament_id(url), default=support_datetime_default)
+
 
 if __name__ == '__main__':
     run(app, host=config.host, port=config.port)

@@ -76,5 +76,5 @@ for row in ft.select('refresh = %s', (True, )):
                 i += 1
             cg.insert([group_id if group_id is not None else 0, row['id'], rounds[0], rounds[1], name])
 
-        ft.update(row['id'], {('refresh', False), ('challo_id', t['id'])})
+        ft.update(row['id'], [('refresh', False), ('challo_id', t['id'])])
         # ft.update(row['id'], {('challo_id', t['id'])})

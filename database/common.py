@@ -55,6 +55,11 @@ class Table:
             self.table_name, ", ".join(['{0} = %s'.format(v[0]) for v in values])
         ), [v[1] for v in values] + [row_id])
 
+    def update_all(self, values):
+        self.cursor.execute("UPDATE {0} SET {1}".format(
+            self.table_name, ", ".join(['{0} = %s'.format(v[0]) for v in values])
+        ), [v[1] for v in values])
+
     @staticmethod
     def _in_clause(array):
         array = list(set(array))

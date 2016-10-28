@@ -58,7 +58,7 @@ class SmashLoader:
                 i += 1
             self.cg.insert([group_id if group_id is not None else 0, self.tournament['id'], rounds[0], rounds[1], name])
 
-        self.ft.update(self.tournament['id'], {('refresh', False)})
+        self.ft.update(self.tournament['id'], [('refresh', False)])
 
     @staticmethod
     def create_score(s):
