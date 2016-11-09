@@ -2,6 +2,7 @@ import sys
 import re
 from database import service
 from typing import Dict, List, Any
+from operator import attrgetter
 
 
 class Pool:
@@ -19,8 +20,8 @@ class Pool:
         # object array
         self.players = {p['id']: Player(self, p) for p in self.fg_player}
         self.tournaments = {t['id']: Touranament(self, t) for t in self.fg_tournament}
-        self.participants = {p['id']: Participant(self, p) for p in self.challo_participant}
-        self.matches = {m['id']: Match(self, m) for m in self.challo_match}
+        self.participants = {(p['tournament_id'], p['id']): Participant(self, p) for p in self.challo_participant}
+        self.matches = {(m['tournament_id'], m['id']): Match(self, m) for m in self.challo_match}
         self.groups = {(g['tournament_id'], g['id']): Group(self, g) for g in self.challo_group}
         self.vs = {(v['player_id'], v['opponent_id']): Vs(self, v) for v in self.rel_vs}
 
@@ -104,7 +105,8 @@ class Touranament(Row):
     def tournament_link(self):
         if self._row['full_url'] is None or len(self._row['full_url']) == 0:
             return ""
-        return '<a href="{0}">{1}</a>'.format(self.get('full_url', ''), self.link_names[self._row['source']])
+        link = self.link_names[self._row['source']] if self._row['source'] in self.link_names else self._row['source']
+        return '<a href="{0}">{1}</a>'.format(self.get('full_url', ''), link)
 
     @property
     def end_at(self):
@@ -158,6 +160,21 @@ class Participant(Row):
         else:
             return self.name
 
+    @property
+    def wl(self):
+        matches = self._pool.matches.values()
+        (w, l) = (0, 0)
+
+        ret = ""
+        for m in sorted(matches, key=attrgetter('tournament_id', 'group_id', 'sort_key', 'id_desc')):
+            if m.player1 == self and m.p1_win or m.player2 == self and m.p2_win:
+                ret = '<span style="color: green">{0}</span>'.format('✔') + ret
+                w += 1
+            if m.player1 == self and m.p2_win or m.player2 == self and m.p1_win:
+                ret = '<span style="color: red">{0}</span>'.format('✖') + ret
+                l += 1
+        return '({0} / {1}) '.format(w, l) + ret
+
 
 class Group(Row):
     @property
@@ -200,6 +217,26 @@ class Vs(Row):
     def sort_key(self):
         return -(self.win + self.lose)
 
+    def wl(self, opponent):
+        matches = self._pool.matches.values()
+        (w, l) = (0, 0)
+
+        ret = ""
+        for m in sorted(matches, key=attrgetter('tournament_id', 'group_id', 'sort_key', 'id_desc')):
+            if (
+                  m.player1.player == self.player and m.player2.player == opponent and m.p1_win or
+                  m.player2.player == self.player and m.player1.player == opponent and m.p2_win
+               ):
+                ret = '<span style="color: green">{0}</span>'.format('✔') + ret
+                w += 1
+            if (
+                  m.player1.player == self.player and m.player2.player == opponent and m.p2_win or
+                  m.player2.player == self.player and m.player1.player == opponent and m.p1_win
+               ):
+                ret = '<span style="color: red">{0}</span>'.format('✖') + ret
+                l += 1
+        return '({0} / {1}) '.format(w, l) + ret
+
 
 class Match(Row):
     @property
@@ -208,15 +245,15 @@ class Match(Row):
 
     @property
     def player1(self):
-        if self._row['player1_id'] in self._pool.participants:
-            return self._pool.participants[self._row['player1_id']]
+        if (self.tournament_id, self._row['player1_id']) in self._pool.participants:
+            return self._pool.participants[(self.tournament_id, self._row['player1_id'])]
         else:
             return Participant(self._pool, {})
 
     @property
     def player2(self):
-        if self._row['player2_id'] in self._pool.participants:
-            return self._pool.participants[self._row['player2_id']]
+        if (self.tournament_id, self._row['player2_id']) in self._pool.participants:
+            return self._pool.participants[(self.tournament_id, self._row['player2_id'])]
         else:
             return Participant(self._pool, {})
 
@@ -357,4 +394,5 @@ class Player(Row):
         # 削ったりせず、素で比べて連続した文字列じゃない状態で含まれてればOK
         ret = re.search('([^a-z]|^){0}([^a-z]|$)'.format(self.unique.lower()), name.lower())
         return ret is not None
+
 

@@ -39,13 +39,13 @@ class SmashLoader:
                 groups[group_id] = (groups[group_id][0], r)
 
             if s['entrant1Id'] and s['entrant2Id']:
-                self.cm.insert([
+                self.cm.insert_with_array([
                     s['id'], self.tournament['id'], s['round'], s['entrant1Id'], s['entrant2Id'],
                     s['winnerId'], self.create_score(s), 0]
                 )
 
         for p in obj['entities']['entrants']:
-            self.cp.insert([
+            self.cp.insert_with_array([
                 p['id'], self.tournament['id'], p['name'], p['finalPlacement']
             ])
 
@@ -56,7 +56,7 @@ class SmashLoader:
             else:
                 name = 'Group {0}'.format(chr(i))
                 i += 1
-            self.cg.insert([group_id if group_id is not None else 0, self.tournament['id'], rounds[0], rounds[1], name])
+            self.cg.insert_with_array([group_id if group_id is not None else 0, self.tournament['id'], rounds[0], rounds[1], name])
 
         self.ft.update(self.tournament['id'], [('refresh', False)])
 

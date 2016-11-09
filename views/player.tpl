@@ -8,8 +8,11 @@
     <table class="table">
     % for vs in sorted(pool.vs.values(), key=attrgetter('sort_key')):
         <tr>
-            <td>vs. {{!vs.opponent.link}}</td>
-            <td class="text-xs-center"><a href="/vs/{{player.url}}/{{vs.opponent.url}}">{{vs.win}} - {{vs.lose}}</a></td>
+            <td>
+                vs. {{!vs.opponent.link}}<br />
+                {{!vs.wl(vs.opponent)}}
+            </td>
+            <td class="text-xs-center" style="vertical-align: middle; font-size: 150%;"><a href="/vs/{{player.url}}/{{vs.opponent.url}}">{{vs.win}} - {{vs.lose}}</a></td>
         </tr>
     % end
     </table>

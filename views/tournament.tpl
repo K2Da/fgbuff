@@ -9,8 +9,11 @@
     <table class="table">
     % for p in sorted(pool.participants.values(), key=lambda p: p.rank_for_sort):
         <tr>
-            <td>{{!p.link_or_text}}</td>
-            <td>{{p.rank_text}}</td>
+            <td>
+                {{!p.link_or_text}}<br />
+                {{!p.wl}}
+            </td>
+            <td style="vertical-align: middle; font-size: 150%; text-align: center;">{{p.rank_text}}</td>
         </tr>
     % end
     </table>

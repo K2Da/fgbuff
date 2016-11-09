@@ -47,10 +47,28 @@ def index():
     return template('index')
 
 
+@app.route('/edit/<url>')
+def tournament_edit(url):
+    return template('edit', title='edit', url=url)
+
+
 @app.route('/api/tournament/<url>')
 def tournament_api(url):
     response.set_header('Content-Type', 'application/json')
-    return json.dumps(service.select_by_tournament_id(url), default=support_datetime_default)
+    _, pool = service.select_by_tournament_id(url)
+    return json.dumps(pool, default=support_datetime_default)
+
+
+@app.post('/api/update')
+def tournament_update():
+    try:
+        data = request.json
+        service.update_tournament(data)
+    except Exception as ex:
+        print(ex)
+        return u'NG'
+
+    return u'OK'
 
 
 if __name__ == '__main__':

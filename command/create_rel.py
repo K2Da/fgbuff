@@ -10,7 +10,7 @@ for participant in pool.participants.values():
     for player in pool.players.values():
         if player.maybe(participant.name):
             print("{0} -> {1}".format(participant.name, player.name))
-            cp.update(participant.id, [('player_id', player.id)])
+            cp.update_with_tournament_id(participant.tournament_id, participant.id, [('player_id', player.id)])
             i += 1
 
 print("participants {0}".format(i))
@@ -43,7 +43,7 @@ for m in pool.matches.values():
 for player, opponent_dic in vs.items():
     win, lose = 0, 0
     for opponent, wl in opponent_dic.items():
-        vs_table.insert([player, opponent, wl[0], wl[1]])
+        vs_table.insert_with_array([player, opponent, wl[0], wl[1]])
 
 
 for player, wl in p.items():

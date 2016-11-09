@@ -7,23 +7,20 @@ def select_by_tournament_id(challo_url):
     return fg_tournament, {
         'fg_tournament':
             [fg_tournament],
-        'fg_player':  # TODO 削る
+        'fg_player':
             Table('fg_player').select_all(),
         'challo_participant':
             Table('challo_participant').select('tournament_id = %s', (tournament_id,)),
         'challo_match':
             Table('challo_match').select('tournament_id = %s', (tournament_id,)),
         'challo_group':
-            Table('challo_group').select('tournament_id = %s', (tournament_id,)),
+            Table('challo_group').select('tournament_id = %s', (tournament_id,))
     }
 
 
 def select_by_player_url(player_url):
     fg_player = Table('fg_player').select_one('url = %s', (player_url,))
-    challo_participant = Table('challo_participant').select('player_id = %s', (fg_player['id'],))
-    cm = Table('challo_match')
-    cp_ids = [cp['id'] for cp in challo_participant]
-    challo_match = cm.select_in('player1_id', cp_ids) + cm.select_in('player2_id', cp_ids)
+    challo_match = Table('').select_matches_by_player(fg_player['id'])
     challo_participant = Table('challo_participant').select_in(
         'id', [cm['player1_id'] for cm in challo_match] + [cm['player2_id'] for cm in challo_match]
     )
@@ -46,6 +43,7 @@ def select_by_player_url(player_url):
 def select_for_players():
     return {
         'fg_player': Table('fg_player').select_all(),
+        'challo_participant': Table('challo_participant').select_all()
     }
 
 
@@ -75,12 +73,13 @@ def select_for_vs(p1, p2):
     player_2 = Table('fg_player').select_one('url = %s', (p2,))
     challo_participant = Table('challo_participant').select_in('player_id', [player_1['id'], player_2['id']])
     cm = Table('challo_match')
-    cp_ids = [cp['id'] for cp in challo_participant]
-    challo_match = cm.select_in('player1_id', cp_ids) + cm.select_in('player2_id', cp_ids)
+    challo_match = cm.select_matches_by_player(player_1['id']) + cm.select_matches_by_player(player_2['id'])
 
-    ps = [p['id'] for p in challo_participant]
+    ps = [(p['tournament_id'], p['id']) for p in challo_participant]
     cut_match = [
-        m for m in challo_match if m['player1_id'] in ps and m['player2_id'] in ps
+        m for m in challo_match if
+        (m['tournament_id'], m['player1_id']) in ps and
+        (m['tournament_id'], m['player2_id']) in ps
     ]
     return player_1['id'], player_2['id'], {
         'fg_player':
@@ -94,3 +93,23 @@ def select_for_vs(p1, p2):
         'challo_group':
             Table('challo_group').select_all(),
     }
+
+
+def update_tournament(data):
+    tournament = data['fg_tournament'][0]
+    p = Table('challo_participant')
+    m = Table('challo_match')
+    g = Table('challo_group')
+    p.delete('tournament_id = %s', (tournament['id'],))
+    m.delete('tournament_id = %s', (tournament['id'],))
+    g.delete('tournament_id = %s', (tournament['id'],))
+    for r in data['challo_participant']:
+        p.insert_with_dictionary(r)
+
+    for r in data['challo_match']:
+        m.insert_with_dictionary(r)
+
+    for r in data['challo_group']:
+        g.insert_with_dictionary(r)
+
+    return

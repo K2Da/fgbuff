@@ -45,10 +45,23 @@ class Table:
     def delete(self, where, params):
         self.cursor.execute("DELETE FROM {0} WHERE {1}".format(self.table_name, where), params)
 
-    def insert(self, values):
+    def insert_with_array(self, values):
         self.cursor.execute("INSERT INTO {0} VALUES ({1})".format(
             self.table_name, ", ".join(['%s' for _ in values])), values
         )
+
+    def insert_with_dictionary(self, dic):
+        columns = ', '.join(dic.keys())
+        places = ', '.join(['%s' for _ in dic.values()])
+        values = [v for v in dic.values()]
+        self.cursor.execute(
+            "INSERT INTO {0} ({1}) VALUES ({2})".format(self.table_name, columns, places), values
+        )
+
+    def update_with_tournament_id(self, tournament_id, row_id, values):
+        self.cursor.execute("UPDATE {0} SET {1} WHERE tournament_id = %s AND id = %s".format(
+            self.table_name, ", ".join(['{0} = %s'.format(v[0]) for v in values])
+        ), [v[1] for v in values] + [tournament_id, row_id])
 
     def update(self, row_id, values):
         self.cursor.execute("UPDATE {0} SET {1} WHERE id = %s".format(
@@ -59,6 +72,16 @@ class Table:
         self.cursor.execute("UPDATE {0} SET {1}".format(
             self.table_name, ", ".join(['{0} = %s'.format(v[0]) for v in values])
         ), [v[1] for v in values])
+
+    def select_matches_by_player(self, player_id):
+        self.cursor.execute("""
+select m.*
+  from challo_match       m inner
+  join challo_participant p on m.tournament_id = p.tournament_id and (m.player1_id = p.id or m.player2_id = p.id) inner
+  join fg_player f          on f.id = p.player_id
+ where f.id = %s
+        """, (player_id,))
+        return self._cursor_to_array()
 
     @staticmethod
     def _in_clause(array):

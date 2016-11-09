@@ -18,7 +18,7 @@ for row in ft.select('refresh = %s', (True, )):
         participants = []
         for p in challonge.participants.index(t['id']):
             participants.append(p['id'])
-            cp.insert([p['id'], row['id'], p['name'], p['final-rank']])
+            cp.insert_with_array([p['id'], row['id'], p['name'], p['final-rank']])
 
         cm = Table('challo_match')
         cm.delete('tournament_id = %s', (row['id'],))
@@ -61,7 +61,7 @@ for row in ft.select('refresh = %s', (True, )):
                 winner = id_dictionary[winner]
 
             if winner is not None and int(winner) > 0:
-                cm.insert([
+                cm.insert_with_array([
                     m['id'], row['id'], m['round'], p1, p2, winner, m['scores-csv'], group_id
                 ])
 
@@ -74,7 +74,7 @@ for row in ft.select('refresh = %s', (True, )):
             else:
                 name = 'Group {0}'.format(chr(i))
                 i += 1
-            cg.insert([group_id if group_id is not None else 0, row['id'], rounds[0], rounds[1], name])
+            cg.insert_with_array([group_id if group_id is not None else 0, row['id'], rounds[0], rounds[1], name])
 
         ft.update(row['id'], [('refresh', False), ('challo_id', t['id'])])
         # ft.update(row['id'], {('challo_id', t['id'])})
