@@ -28,7 +28,7 @@
                             <a class="nav-link" href="/players">Players</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/vstable/">CPT Table</a>
+                            <a class="nav-link" href="/vstable">CPT Table</a>
                         </li>
                     </ul>
                 </div>
