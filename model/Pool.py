@@ -15,15 +15,12 @@ class Pool:
         self.challo_match = data['challo_match'] if 'challo_match' in data else []
         self.challo_group = data['challo_group'] if 'challo_group' in data else []
 
-        self.rel_vs = data['rel_vs'] if 'rel_vs' in data else []
-
         # object array
         self.players = {p['id']: Player(self, p) for p in self.fg_player}
         self.tournaments = {t['id']: Touranament(self, t) for t in self.fg_tournament}
         self.participants = {(p['tournament_id'], p['id']): Participant(self, p) for p in self.challo_participant}
         self.matches = {(m['tournament_id'], m['id']): Match(self, m) for m in self.challo_match}
         self.groups = {(g['tournament_id'], g['id']): Group(self, g) for g in self.challo_group}
-        self.vs = {(v['player_id'], v['opponent_id']): Vs(self, v) for v in self.rel_vs}
 
         # dic
         self.player_to_participant = {
@@ -32,6 +29,29 @@ class Pool:
         self.challo_tournament_to_fg = {
             t['challo_id']: t['id'] for t in data['fg_tournament']
         } if 'fg_tournament' in data else {}
+        self._vs = None
+
+    @property
+    def vs(self):
+        if self._vs is None:
+            vs = {player['id']: {} for player in self.fg_player}
+            for m in self.matches.values():
+                fg1, fg2 = m.player1.player.id, m.player2.player.id
+                if fg1 != 0 and fg2 != 0 and (m.p1_win or m.p2_win):
+                    if m.p1_win:
+                        w, l = fg1, fg2
+                    if m.p2_win:
+                        w, l = fg2, fg1
+
+                    vs[w][l] = (vs[w][l][0] + 1, vs[w][l][1]) if l in vs[w] else (1, 0)
+                    vs[l][w] = (vs[l][w][0], vs[l][w][1] + 1) if w in vs[l] else (0, 1)
+
+            self._vs = {}
+            for player, opponent_dic in vs.items():
+                for opponent, wl in opponent_dic.items():
+                    self.vs[(player, opponent)] = Vs(self, player, opponent, wl[0], wl[1])
+
+        return self._vs
 
     @classmethod
     def init_for_tournament(cls, challo_url):
@@ -63,6 +83,16 @@ class Pool:
     @classmethod
     def init_for_create_vs(cls):
         return cls(service.select_for_create_vs())
+
+    @classmethod
+    def init_for_vs_table(cls):
+        urls = [
+            'infiltration', 'tokido', 'justin-wong', 'nuckledu', 'fuudo', 'xiao-hai', 'gamerbee', 'mov',
+            'daigo-umehara', 'julio-fuentes', 'phenom', 'momochi', 'xian', 'haitani', 'eita', 'luffy',
+            'mago', 'go1', 'filipino-champ', 'ccl', 'chris-tatarian', 'mistercrimson', 'kazunoko', 'brolynho',
+            'ricki-ortiz', 'ryan-hart', 'problem-x', 'misterio', 'xsk_samurai', 'sako', 'dr-ray'
+        ]
+        return urls, cls(service.select_for_vs_table(urls))
 
 
 class Row:
@@ -111,6 +141,14 @@ class Touranament(Row):
     @property
     def end_at(self):
         return self.get('end_at', '-')
+
+    @property
+    def date_string(self):
+        end_at = self.end_at
+        if end_at == '-':
+            return '-'
+
+        return end_at.strftime('%b %d, %Y')
 
     @property
     def type(self):
@@ -190,48 +228,48 @@ class Group(Row):
         return self.get('name', '')
 
 
-class Vs(Row):
+class Vs:
+    def __init__(self, pool, player_id, opponent_id, win, lose):
+        self._pool = pool
+        self.player_id = player_id
+        self.opponent_id = opponent_id
+        self.win = win
+        self.lose = lose
+
     @property
     def player(self):
-        if self._row['player_id'] in self._pool.players:
-            return self._pool.players[self._row['player_id']]
+        if self.player_id in self._pool.players:
+            return self._pool.players[self.player_id]
         else:
             return Player(self._pool, {})
 
     @property
     def opponent(self):
-        if self._row['opponent_id'] in self._pool.players:
-            return self._pool.players[self._row['opponent_id']]
+        if self.opponent_id in self._pool.players:
+            return self._pool.players[self.opponent_id]
         else:
             return Player(self._pool, {})
 
     @property
-    def win(self):
-        return self.get('win', 0)
-
-    @property
-    def lose(self):
-        return self.get('lose', 0)
-
-    @property
     def sort_key(self):
-        return -(self.win + self.lose)
+        return -((self.win + self.lose) * 10000 + self.win)
 
-    def wl(self, opponent):
+    @property
+    def wl(self):
         matches = self._pool.matches.values()
         (w, l) = (0, 0)
 
         ret = ""
-        for m in sorted(matches, key=attrgetter('tournament_id', 'group_id', 'sort_key', 'id_desc')):
+        for m in sorted(matches, key=attrgetter('end_at_desc', 'group_id', 'sort_key', 'id_desc')):
             if (
-                  m.player1.player == self.player and m.player2.player == opponent and m.p1_win or
-                  m.player2.player == self.player and m.player1.player == opponent and m.p2_win
+                  m.player1.player == self.player and m.player2.player == self.opponent and m.p1_win or
+                  m.player2.player == self.player and m.player1.player == self.opponent and m.p2_win
                ):
                 ret = '<span style="color: green">{0}</span>'.format('✔') + ret
                 w += 1
             if (
-                  m.player1.player == self.player and m.player2.player == opponent and m.p2_win or
-                  m.player2.player == self.player and m.player1.player == opponent and m.p1_win
+                  m.player1.player == self.player and m.player2.player == self.opponent and m.p2_win or
+                  m.player2.player == self.player and m.player1.player == self.opponent and m.p1_win
                ):
                 ret = '<span style="color: red">{0}</span>'.format('✖') + ret
                 l += 1

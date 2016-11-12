@@ -64,7 +64,7 @@
     onNameChange(e) {
         e.preventUpdate = false
         this.store.update(
-            'challo_participant', e.item.participant.id, [['name', e.srcElement.value]]
+            'challo_participant', e.item.participant.id, [['name', e.srcElement.value.trim()]]
         )
     }
 

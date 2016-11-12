@@ -7,13 +7,15 @@
     <h5>Matchups</h5>
     <table class="table">
     % for vs in sorted(pool.vs.values(), key=attrgetter('sort_key')):
-        <tr>
-            <td>
-                vs. {{!vs.opponent.link}}<br />
-                {{!vs.wl(vs.opponent)}}
-            </td>
-            <td class="text-xs-center" style="vertical-align: middle; font-size: 150%;"><a href="/vs/{{player.url}}/{{vs.opponent.url}}">{{vs.win}} - {{vs.lose}}</a></td>
-        </tr>
+        % if vs.player_id == player_id:
+            <tr>
+                <td>
+                    vs. {{!vs.opponent.link}}<br />
+                    {{!vs.wl}}
+                </td>
+                <td class="text-xs-center" style="vertical-align: middle; font-size: 150%;"><a href="/vs/{{player.url}}/{{vs.opponent.url}}">{{vs.win}} - {{vs.lose}}</a></td>
+            </tr>
+        % end
     % end
     </table>
 </div>
@@ -28,7 +30,7 @@
             <tr>
                 <th colspan="2">{{! m.tournament.link_or_name}}</th>
                 <td colspan="1" class="text-xs-right">Rank {{participant.final_rank}}</td>
-                <td colspan="1" class="text-xs-right">{{m.tournament.end_at}}</td>
+                <td colspan="1" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>
         % end
         % if group is None or group != m.group:

@@ -1,4 +1,4 @@
-from database.common import Table
+from database.common import Table, CustomQueries
 
 
 def select_by_tournament_id(challo_url):
@@ -20,15 +20,13 @@ def select_by_tournament_id(challo_url):
 
 def select_by_player_url(player_url):
     fg_player = Table('fg_player').select_one('url = %s', (player_url,))
-    challo_match = Table('').select_matches_by_player(fg_player['id'])
+    challo_match = CustomQueries.select_matches_by_player(fg_player['id'])
     challo_participant = Table('challo_participant').select_in(
         'id', [cm['player1_id'] for cm in challo_match] + [cm['player2_id'] for cm in challo_match]
     )
     return fg_player['id'], {
         'fg_player':
             Table('fg_player').select_all(),
-        'rel_vs':
-            Table('rel_vs').select('player_id = %s', (fg_player['id'],)),
         'challo_participant':
             challo_participant,
         'challo_match':
@@ -62,6 +60,16 @@ def select_for_create_vs():
     }
 
 
+def select_for_vs_table(player_urls):
+    return {
+        'fg_tournament': Table('fg_tournament').select_all(),
+        'fg_player': Table('fg_player').select_in('url', player_urls),
+        'challo_match': CustomQueries.select_matches_by_players(player_urls),
+        'challo_participant': CustomQueries.select_participants_by_players(player_urls),
+        'challo_group': Table('challo_group').select_all(),
+    }
+
+
 def select_for_tournaments():
     return {
         'fg_tournament': Table('fg_tournament').select_all(),
@@ -72,8 +80,8 @@ def select_for_vs(p1, p2):
     player_1 = Table('fg_player').select_one('url = %s', (p1,))
     player_2 = Table('fg_player').select_one('url = %s', (p2,))
     challo_participant = Table('challo_participant').select_in('player_id', [player_1['id'], player_2['id']])
-    cm = Table('challo_match')
-    challo_match = cm.select_matches_by_player(player_1['id']) + cm.select_matches_by_player(player_2['id'])
+    challo_match = (CustomQueries.select_matches_by_player(player_1['id']) +
+                    CustomQueries.select_matches_by_player(player_2['id']))
 
     ps = [(p['tournament_id'], p['id']) for p in challo_participant]
     cut_match = [
@@ -111,5 +119,3 @@ def update_tournament(data):
 
     for r in data['challo_group']:
         g.insert_with_dictionary(r)
-
-    return

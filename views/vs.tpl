@@ -11,7 +11,7 @@
         % if tournament is None or tournament != m.tournament:
             <tr>
                 <th colspan="3">{{! m.tournament.link_or_name}}</th>
-                <td colspan="1" class="text-xs-right">{{m.tournament.end_at}}</td>
+                <td colspan="1" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>
         % end
         % if group is None or group != m.group:

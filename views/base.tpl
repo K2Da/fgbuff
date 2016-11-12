@@ -27,10 +27,15 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/players">Players</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/vstable/">CPT Table</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
-            <div class="row" style="padding: 1rem 2rem">{{!base}}</div>
+            <div class="row" style="padding: 1rem 2rem">
+                {{!base}}
+            </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>

@@ -19,6 +19,7 @@
     })
 
     onParticipantChange(e) {
+        console.log(e.srcElement.value)
         let participant = this.store.participant_by_name(e.srcElement.value)
         if (participant != null) {
             console.log(this.match)
