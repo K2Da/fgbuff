@@ -3,8 +3,8 @@ import psycopg2.extras
 import config
 
 
-def get_connection():
-    connection = psycopg2.connect(config.connection_string)
+def get_connection(string):
+    connection = psycopg2.connect(string)
     connection.autocommit = True
     return connection
 
@@ -23,7 +23,7 @@ def in_clause(array):
 
 class Table:
     def __init__(self, table_name):
-        self.connection = get_connection()
+        self.connection = get_connection(config.master_string)
         self.table_name = table_name
         self.cursor = self.connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -81,7 +81,7 @@ class Table:
 
 
 class CustomQueries:
-    connection = get_connection()
+    connection = get_connection(config.master_string)
     cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     @staticmethod
@@ -122,3 +122,21 @@ select p.*
        where f.url in ({0})
         """.format(sql), param)
         return cursor_to_array(CustomQueries.cursor)
+
+
+class TranQueries:
+    connection = get_connection(config.tran_string)
+    cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    @staticmethod
+    def select_comments(url):
+        TranQueries.cursor.execute("""
+select * from comment where url = %s order by at
+    """, (url,))
+        return cursor_to_array(TranQueries.cursor)
+
+    @staticmethod
+    def insert_comment(url, text):
+        TranQueries.cursor.execute("""
+insert into comment (url, text, at) values(%s, %s, now())
+        """, (url, text))

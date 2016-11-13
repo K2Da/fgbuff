@@ -43,6 +43,12 @@ def standing(standing_url):
     return cache(request.path, template('standing', pool=pool, standing=s))
 
 
+@app.route('/vstable')
+def vstable():
+    s, pool = Pool.init_for_standing('cpt-finals-2016')
+    return cache(request.path, template('standing', pool=pool, standing=s))
+
+
 @app.route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root='./static')
@@ -75,6 +81,18 @@ def tournament_update():
         return u'NG'
 
     return u'OK'
+
+
+@app.post('/api/comment/read')
+def comment_read():
+    response.set_header('Content-Type', 'application/json')
+    return json.dumps(service.select_comments(request.json), default=support_datetime_default)
+
+
+@app.post('/api/comment/write')
+def comment_write():
+    service.insert_comment(request.json)
+    return 'OK'
 
 
 if __name__ == '__main__':

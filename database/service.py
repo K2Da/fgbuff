@@ -1,4 +1,4 @@
-from database.common import Table, CustomQueries
+from database.common import Table, CustomQueries, TranQueries
 from model import Pool
 
 
@@ -121,3 +121,11 @@ def update_tournament(data):
 
     for r in data['challo_group']:
         g.insert_with_dictionary(r)
+
+
+def insert_comment(data):
+    TranQueries.insert_comment(data['page_url'], data['text'])
+
+
+def select_comments(data):
+    return TranQueries.select_comments(data['page_url'])

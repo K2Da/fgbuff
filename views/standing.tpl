@@ -1,5 +1,5 @@
 % from operator import attrgetter
-% rebase('base.tpl', title='name')
+% rebase('base.tpl', title=standing.name)
 % urls = standing.participants
 <div class="col-xs-12">
     <h4 class="display-4">{{standing.name}}</h4>
