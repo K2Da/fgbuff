@@ -27,8 +27,14 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/players">Players</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/vstable">CPT Table</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Standing
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="/standing/cpt-finals-2016">CPT Finals</a>
+                                <a class="dropdown-item" href="/standing/cpt-asia-finals-2016">CPT Asia Finals</a>
+                            </div>
                         </li>
                     </ul>
                 </div>

@@ -35,10 +35,11 @@
         <tr>
             <% p1 = '<b><u>{0}</u></b>' if m.p1_win else '{0}' %>
             <% p2 = '<b><u>{0}</u></b>' if m.p2_win else '{0}' %>
-            <td class="text-xs-center">{{m.round_name}}</td>
+            <td class="text-xs-center">{{m.round_name if m.round_name != round else ''}}</td>
             <td class="text-xs-right">{{!p1.format(m.player1.link_or_text)}}</td>
             <td class="text-xs-center">{{m.scores_csv}}</td>
             <td class="text-xs-left">{{!p2.format(m.player2.link_or_text)}}</td>
+            <% round = m.round_name %>
         </tr>
         <% group = m.group %>
     % end

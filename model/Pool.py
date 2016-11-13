@@ -85,14 +85,9 @@ class Pool:
         return cls(service.select_for_create_vs())
 
     @classmethod
-    def init_for_vs_table(cls):
-        urls = [
-            'infiltration', 'tokido', 'justin-wong', 'nuckledu', 'fuudo', 'xiao-hai', 'gamerbee', 'mov',
-            'daigo-umehara', 'julio-fuentes', 'phenom', 'momochi', 'xian', 'haitani', 'eita', 'luffy',
-            'mago', 'go1', 'filipino-champ', 'ccl', 'chris-tatarian', 'mistercrimson', 'kazunoko', 'brolynho',
-            'ricki-ortiz', 'ryan-hart', 'problem-x', 'misterio', 'xsk_samurai', 'sako', 'dr-ray'
-        ]
-        return urls, cls(service.select_for_vs_table(urls))
+    def init_for_standing(cls, standing_url):
+        standing, pool = service.select_for_vs_table(standing_url)
+        return standing, cls(pool)
 
 
 class Row:
@@ -434,3 +429,15 @@ class Player(Row):
         return ret is not None
 
 
+class Standing(Row):
+    @property
+    def url(self):
+        return self.get('url', '')
+
+    @property
+    def name(self):
+        return self.get('name', '')
+
+    @property
+    def participants(self):
+        return [s.strip() for s in self.get('participants', '').split(',')]

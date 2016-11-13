@@ -37,10 +37,10 @@ def player(player_url):
     return cache(request.path, template('player', pool=pool, player_id=player_id))
 
 
-@app.route('/vstable')
-def vstable():
-    urls, pool = Pool.init_for_vs_table()
-    return cache(request.path, template('vstable', pool=pool, urls=urls))
+@app.route('/standing/<standing_url>')
+def standing(standing_url):
+    s, pool = Pool.init_for_standing(standing_url)
+    return cache(request.path, template('standing', pool=pool, standing=s))
 
 
 @app.route('/static/<filepath:path>')
