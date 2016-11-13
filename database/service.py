@@ -1,5 +1,5 @@
 from database.common import Table, CustomQueries, TranQueries
-from model import Pool
+from model.Pool import Standing
 
 
 def select_by_tournament_id(challo_url):
@@ -62,7 +62,7 @@ def select_for_create_vs():
 
 
 def select_for_vs_table(standing_url):
-    standing = Pool.Standing(None, Table('fg_standing').select_one('url = %s', (standing_url,)))
+    standing = Standing(None, Table('fg_standing').select_one('url = %s', (standing_url,)))
     return standing, {
         'fg_tournament': Table('fg_tournament').select_all(),
         'fg_player': Table('fg_player').select_in('url', standing.participants),
