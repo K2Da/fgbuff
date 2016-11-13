@@ -140,3 +140,4 @@ select * from comment where url = %s order by at
         TranQueries.cursor.execute("""
 insert into comment (url, text, at) values(%s, %s, now())
         """, (url, text))
+

@@ -87,7 +87,7 @@ class Pool:
     @classmethod
     def init_for_standing(cls, standing_url):
         standing, pool = service.select_for_vs_table(standing_url)
-        return standing, cls(pool)
+        return Standing(None, standing), cls(pool)
 
 
 class Row:
