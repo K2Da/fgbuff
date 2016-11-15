@@ -1,6 +1,8 @@
 class CommentStore {
     constructor(page_url) {
         riot.observable(this)
+        this.comments = []
+        this.count = 0
         this.page_url = page_url
         this.read()
     }
@@ -12,6 +14,7 @@ class CommentStore {
             .send({page_url: self.page_url})
             .end((err, res) => {
                 self.comments = res.body
+                self.count = self.comments.length
                 self.trigger('refresh', self)
             })
     }

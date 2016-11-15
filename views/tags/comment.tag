@@ -2,8 +2,8 @@
     <form class="form-inline float-xs-right">
         <button type="button"
             class="btn btn-outline-danger" data-container="body" data-toggle="popover" data-placement="bottom"
-            data-content={ this.comments } title="comments">
-                { this.store.comments.length }
+            data-content={ this.comment_list } title="comments">
+                { this.store.count }
         </button>
         <input name="input_comment" class="form-control" type="text" placeholder="Comment">
         <button class="btn btn-outline-success" onclick={ this.write }>push</button>
@@ -17,7 +17,7 @@
 
     RiotControl.on('refresh', (store) => {
         self.store = store
-        this.comments = store.comment_list()
+        this.comment_list = store.comment_list()
         self.update()
         if (this.wrote) {
             $('[data-toggle="popover"]').popover('show')
