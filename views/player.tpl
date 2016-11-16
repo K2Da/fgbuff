@@ -21,6 +21,22 @@
 </div>
 
 <div class="col-xs-12 col-lg-8">
+    <h5>Tournaments</h5>
+    <table class="table">
+    % for p in sorted(pool.participants.values(), key=attrgetter('end_at_desc')):
+        % if p.player_id != player_id:
+            % continue
+        % end
+        <tr>
+            <td class="text-xs-left"><a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a><td>
+            <td class="text-xs-right">Rank</td>
+            <td class="text-xs-right">{{p.final_rank}}</td>
+            <td class="text-xs-left">as {{p.name}}</td>
+            <td class="text-xs-center">{{p.tournament.date_string}}</td>
+        </tr>
+    % end
+    </table>
+
     <h5>Matches</h5>
     <% tournament, group = None, None %>
     <table class="table">
@@ -28,9 +44,9 @@
         % if tournament is None or tournament != m.tournament:
             <% participant = m.player1 if m.player1.player.id == player.id else m.player2 %>
             <tr>
-                <th colspan="2">{{! m.tournament.link_or_name}}</th>
+                <th colspan="2" id="{{m.tournament.challo_url}}">{{! m.tournament.link_or_name}}</th>
                 <td colspan="1" class="text-xs-right">Rank {{participant.final_rank}}</td>
-                <td colspan="1" class="text-xs-right">{{m.tournament.date_string}}</td>
+                <td colspan="1" class="text-xs-center">{{m.tournament.date_string}}</td>
             </tr>
         % end
         % if group is None or group != m.group:

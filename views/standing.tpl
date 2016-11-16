@@ -3,7 +3,7 @@
 % urls = standing.participants
 <div class="col-xs-12">
     <h4 class="display-4">{{standing.name}}</h4>
-    <table class="table-bordered" style="margin-top: 20px; width: {{len(pool.players)*36 + 300}}px; text-align: center;">
+    <table class="table-bordered" style="margin-top: 20px; width: {{len(pool.players)*36 + 342}}px; text-align: center;">
         <tr>
             % players = sorted(pool.players.values(), key=lambda p: urls.index(p.url))
             <td> </td>
@@ -12,6 +12,7 @@
                 <td>{{i + 1}}</td>
             % end
             <td>w / l / d</td>
+            <td>rate</td>
         </tr>
         % for i, p1 in enumerate(players):
             <tr>
@@ -32,6 +33,11 @@
                     </td>
                 % end
                 <td>{{w}} / {{l}} / {{d}}</td>
+                % if w + l + d != 0:
+                    <td>{{round(w/(w + l + d) * 100)}}%</td>
+                % else:
+                    <td>-</td>
+                % end
             </tr>
         % end
     </table>

@@ -164,8 +164,12 @@ class Participant(Row):
         return self.get('tournament_id', 0)
 
     @property
+    def tournament(self) -> Touranament:
+        return self._pool.tournaments[self.tournament_id]
+
+    @property
     def final_rank(self):
-        return self.get('final_rank', 0)
+        return self.get('final_rank', '-')
 
     @property
     def rank_for_sort(self):
@@ -207,6 +211,10 @@ class Participant(Row):
                 ret = '<span style="color: red">{0}</span>'.format('✖') + ret
                 l += 1
         return '({0} / {1}) '.format(w, l) + ret
+
+    @property
+    def end_at_desc(self):
+        return self.tournament.end_at_desc
 
 
 class Group(Row):
