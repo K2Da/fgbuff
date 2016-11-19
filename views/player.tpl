@@ -31,7 +31,6 @@
             <td class="text-xs-left"><a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a><td>
             <td class="text-xs-right">{{p.rank_emoji}}</td>
             <td class="text-xs-right">{{p.rank_text}}</td>
-            <td class="text-xs-left" nowrap>{{p.name}}</td>
             <td class="text-xs-right" nowrap>{{p.tournament.date_string}}</td>
         </tr>
     % end
@@ -45,7 +44,7 @@
             <% participant = m.player1 if m.player1.player.id == player.id else m.player2 %>
             <tr>
                 <th colspan="2" id="{{m.tournament.challo_url}}">{{! m.tournament.link_or_name}}</th>
-                <td colspan="1" class="text-xs-right">{{participant.rank_emoji}} {{participant.rank_text}}</td>
+                <td colspan="1" class="text-xs-right" nowrap>{{participant.rank_emoji}} {{participant.rank_text}}</td>
                 <td colspan="3" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>
         % end

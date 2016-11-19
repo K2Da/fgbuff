@@ -22,7 +22,7 @@
     </head>
     <body>
         % include('analytics.tpl')
-        <div class="container theme-showcase" role="main">
+        <div class="container theme-showcase" role="main" style="margin-left: 0">
             <nav class="navbar navbar-light">
                 <div class="collapse navbar-toggleable-xs" id="navbar-header">
                     <a class="navbar-brand" href="/">Crouch Tech</a>
