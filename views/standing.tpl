@@ -20,17 +20,21 @@
                 <td style="text-align: left">{{!p1.link}}</td>
                 % w, l, d = 0, 0, 0,
                 % for p2 in players:
-                    <td>
-                        % if (p1.id, p2.id) in pool.vs:
-                            % vs = pool.vs[(p1.id, p2.id)]
-                            % w += 1 if vs.win > vs.lose else 0
-                            % l += 1 if vs.win < vs.lose else 0
-                            % d += 1 if vs.win == vs.lose else 0
-                            <a href="/vs/{{p1.url}}/{{p2.url}}">{{!vs.win}}-{{!vs.lose}}</a>
-                        % else:
+                    % if p1.id == p2.id:
+                        <td class="table-success"></td>
+                    % else:
+                        <td>
+                            % if (p1.id, p2.id) in pool.vs:
+                                % vs = pool.vs[(p1.id, p2.id)]
+                                % w += 1 if vs.win > vs.lose else 0
+                                % l += 1 if vs.win < vs.lose else 0
+                                % d += 1 if vs.win == vs.lose else 0
+                                <a href="/vs/{{p1.url}}/{{p2.url}}" data-toggle="tooltip" title="{{p1.name}} vs. {{p2.name}}">{{!vs.win}}-{{!vs.lose}}</a>
+                            % else:
 
-                        % end
-                    </td>
+                            % end
+                        </td>
+                    % end
                 % end
                 <td>{{w}} / {{l}} / {{d}}</td>
                 % if w + l + d != 0:

@@ -59,6 +59,7 @@
 
         <script>
             riot.mount('comment', { page_url: '{{!request.path}}' })
+            $(function () { $('[data-toggle="tooltip"]').tooltip() })
         </script>
     </body>
 </html>
