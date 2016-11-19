@@ -29,10 +29,10 @@
         % end
         <tr>
             <td class="text-xs-left"><a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a><td>
-            <td class="text-xs-right">Rank</td>
-            <td class="text-xs-right">{{p.final_rank}}</td>
-            <td class="text-xs-left">as {{p.name}}</td>
-            <td class="text-xs-right">{{p.tournament.date_string}}</td>
+            <td class="text-xs-right">{{p.rank_emoji}}</td>
+            <td class="text-xs-right">{{p.rank_text}}</td>
+            <td class="text-xs-left" nowrap>{{p.name}}</td>
+            <td class="text-xs-right" nowrap>{{p.tournament.date_string}}</td>
         </tr>
     % end
     </table>
@@ -40,18 +40,18 @@
     <h5>Matches</h5>
     <% tournament, group = None, None %>
     <table class="table">
-    % for m in sorted(pool.matches.values(), key=attrgetter('end_at_desc', 'group_id', 'sort_key', 'id_desc')):
+    % for m in sorted(pool.matches.values(), key=attrgetter('end_at_desc', 'tournament_id', 'group_id', 'sort_key', 'id_desc')):
         % if tournament is None or tournament != m.tournament:
             <% participant = m.player1 if m.player1.player.id == player.id else m.player2 %>
             <tr>
                 <th colspan="2" id="{{m.tournament.challo_url}}">{{! m.tournament.link_or_name}}</th>
-                <td colspan="1" class="text-xs-right">Rank {{participant.final_rank}}</td>
-                <td colspan="2" class="text-xs-right">{{m.tournament.date_string}}</td>
+                <td colspan="1" class="text-xs-right">{{participant.rank_emoji}} {{participant.rank_text}}</td>
+                <td colspan="3" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>
         % end
         % if group is None or group != m.group:
             <tr>
-                <th colspan="5">{{m.group.name}}</th>
+                <th colspan="6">{{m.group.name}}</th>
             </tr>
         % end
         <tr>
@@ -60,16 +60,17 @@
                     m.p1_win and m.player1.player.id == player.id
                  or m.p2_win and m.player2.player.id == player.id
                 ) else 'table-danger'
-                left, center, right, rank = (
-                    m.player1.link_or_text, m.scores_csv, m.player2.link_or_text, m.player2.final_rank
+                left, center, right, emoji, rank = (
+                    m.player1.link_or_text, m.scores_csv, m.player2.link_or_text, m.player2.rank_emoji, m.player2.rank_text
                 ) if m.player1.player.id == player.id else (
-                    m.player2.link_or_text, m.scores_csv[::-1], m.player1.link_or_text, m.player1.final_rank
+                    m.player2.link_or_text, m.scores_csv[::-1], m.player1.link_or_text, m.player1.rank_emoji, m.player1.rank_text
                 )
             %>
             <td class="text-xs-center">{{m.round_name}}</td>
             <td class="text-xs-right">{{!left}}</td>
             <td class="text-xs-center {{score_class}}">{{center}}</td>
             <td class="text-xs-left">{{!right}}</td>
+            <td class="text-xs-right">{{emoji}}</td>
             <td class="text-xs-right">{{rank}}</td>
         </tr>
         <% tournament, group = m.tournament, m.group %>

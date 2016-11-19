@@ -169,7 +169,7 @@ class Participant(Row):
 
     @property
     def final_rank(self):
-        return self.get('final_rank', '-')
+        return self.get('final_rank', 100000)
 
     @property
     def rank_for_sort(self):
@@ -178,6 +178,16 @@ class Participant(Row):
     @property
     def rank_text(self):
         return self.get('final_rank', '-')
+
+    @property
+    def rank_emoji(self):
+        if self.final_rank == 1:
+            return '🥇'
+        if self.final_rank == 2:
+            return '🥈'
+        if self.final_rank == 3:
+            return '🥉'
+        return '🏁'
 
     @property
     def player_id(self):
@@ -422,8 +432,8 @@ class Player(Row):
             return '|'.join([separate_team_name(p) for p in patterns])
 
         if self.re is None:
-            additional = self.patterns.split('^') if len(self.patterns) != 0 else []
-            self.re = re.compile(join_reg([self.name, self.url] + additional))
+            additional = self.patterns.split('\\') if len(self.patterns) != 0 else []
+            self.re = re.compile(join_reg([self.url] + additional))
 
         if self.re.search(normalize(name)) is not None:
             return True
