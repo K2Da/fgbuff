@@ -6,7 +6,7 @@
             <col width="50px" >
             <col width="200px">
         </colgroup>
-        <tr each={ this.store.matches(this.round) }>
+        <tr each={ this.store.matches(this.group_id, this.round) }>
             <td><a onclick={ this.onDelete }>-</a></td>
             <td>
                 <participant-input
@@ -37,8 +37,9 @@
     </table>
 
     var self   = this
-    this.store = opts.store
-    this.round = opts.round
+    this.store    = opts.store
+    this.group_id = opts.group_id
+    this.round    = opts.round
 
     onScoreChange(e) {
         console.log(e.item.id)

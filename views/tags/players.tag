@@ -1,7 +1,4 @@
 <players>
-    <button type="button" class="btn btn-primary" onclick={onClickRefresh}>
-        refresh
-    </button>
     <table class='table'>
         <tr each={ participant, i in self.store.participants() }>
             <td>{ i + 1 }</td>
@@ -52,26 +49,22 @@
     </style>
 
     var self = this
-    self.store = opts.store
+    this.store = opts.store
 
     onRankChange(e) {
-        e.preventUpdate = true
-        this.store.update(
+        parent.store.update(
             'challo_participant', e.item.participant.id, [['final_rank', e.srcElement.value]]
         )
     }
 
     onNameChange(e) {
         e.preventUpdate = false
-        this.store.update(
+        parent.store.update(
             'challo_participant', e.item.participant.id, [['name', e.srcElement.value.trim()]]
         )
     }
 
     onDelete(e) {
-        this.store.remove('challo_participant', e.item.participant.id)
-    }
-
-    onClickRefresh(e) {
+        parent.store.remove('challo_participant', e.item.participant.id)
     }
 </players>

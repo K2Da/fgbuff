@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.1/awesomplete.css" crossorigin="anonymous">
         <script src='https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.18/riot+compiler.js'></script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.1/awesomplete.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
         <script src='/static/js/lib/superagent.js'></script>
         <script src='/static/js/lib/riotcontrol.js'></script>
         <script src='/static/js/Store.js'></script>
@@ -23,6 +24,7 @@
             % include('tags/player_input.tag')
             % include('tags/players.tag')
             % include('tags/bracket.tag')
+            % include('tags/group.tag')
             % include('tags/app.tag')
             % include('tags/participants_li.tag')
             % include('tags/participant_input.tag')
