@@ -10,7 +10,7 @@
     % for m in sorted(pool.matches.values(), key=attrgetter('end_at_desc', 'group_id', 'sort_key', 'id_desc')):
         % if tournament is None or tournament != m.tournament:
             <tr>
-                <th colspan="5">{{! m.tournament.link_or_name}}</th>
+                <th colspan="5">{{!m.tournament.flag_span}} {{! m.tournament.link_or_name}}</th>
                 <td colspan="1" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>
         % end

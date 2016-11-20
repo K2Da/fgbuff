@@ -303,8 +303,6 @@ class Vs:
     @property
     def wl(self):
         matches = self._pool.matches.values()
-        (w, l) = (0, 0)
-
         ret = ""
         for m in sorted(matches, key=attrgetter('end_at_desc', 'group_id', 'sort_key', 'id_desc')):
             if (
@@ -312,14 +310,12 @@ class Vs:
                   m.player2.player == self.player and m.player1.player == self.opponent and m.p2_win
                ):
                 ret = '<span style="color: green">{0}</span>'.format('✔') + ret
-                w += 1
             if (
                   m.player1.player == self.player and m.player2.player == self.opponent and m.p2_win or
                   m.player2.player == self.player and m.player1.player == self.opponent and m.p1_win
                ):
                 ret = '<span style="color: red">{0}</span>'.format('✖') + ret
-                l += 1
-        return '({0} / {1}) '.format(w, l) + ret
+        return ret
 
 
 class Match(Row):
