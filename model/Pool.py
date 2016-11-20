@@ -1,6 +1,7 @@
 import sys
 import re
 import model.Labels
+import model.Countries
 from database import service
 from typing import Dict, List, Any
 from operator import attrgetter
@@ -108,7 +109,27 @@ class Row:
             return default
 
 
-class Touranament(Row):
+class CountryMixin:
+    @property
+    def country(self):
+        return self.get('country', '')
+
+    @property
+    def flag_span(self):
+        if self.country == '':
+            return ''
+        if self.country == '@O':
+            return "<span data-toggle='tooltip' title='{0}'>🌐</span>".format(self.country_name)
+
+        span = "<span class='flag-icon flag-icon-{0}'  data-toggle='tooltip' title='{1}'></span>"
+        return span.format(self.country, self.country_name)
+
+    @property
+    def country_name(self):
+        return model.Countries.code_to_name(self.country)
+
+
+class Touranament(Row, CountryMixin):
     link_names = {
         'challo': 'challonge',
         'smash': 'smash.gg'
@@ -380,7 +401,7 @@ class Match(Row):
         return self.get('winner_id', -1) == self.player2.id
 
 
-class Player(Row):
+class Player(Row, CountryMixin):
     def __init__(self, pool, challo_row):
         self.re = None
         super(Player, self).__init__(pool, challo_row)

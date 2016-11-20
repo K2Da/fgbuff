@@ -4,6 +4,8 @@
 <div class="col-xs-12">
     <h4 class="display-4">{{tournament.name}}</h4>
     <dl class="row">
+        <dt class="col-sm-2 text-xs-right">Location</dt>
+        <dd class="col-sm-9">{{!tournament.flag_span}} {{tournament.country_name}}</dd>
         <dt class="col-sm-2 text-xs-right">Date</dt>
         <dd class="col-sm-9">{{tournament.date_string}}</dd>
         <dt class="col-sm-2 text-xs-right">Labels</dt>
@@ -17,7 +19,7 @@
     % for p in sorted(pool.participants.values(), key=lambda p: p.rank_for_sort):
         <tr>
             <td>
-                {{!p.link_or_text}}<br />
+                {{!p.player.flag_span}} {{!p.link_or_text}}<br />
                 {{!p.wl}}
             </td>
             <td style="vertical-align: middle; font-size: 150%; text-align: center;">{{p.rank_text}}</td>
@@ -43,9 +45,9 @@
             <% p1 = '<b><u>{0}</u></b>' if m.p1_win else '{0}' %>
             <% p2 = '<b><u>{0}</u></b>' if m.p2_win else '{0}' %>
             <td class="text-xs-center">{{m.round_name if m.round_name != round else ''}}</td>
-            <td class="text-xs-right">{{!p1.format(m.player1.link_or_text)}}</td>
+            <td class="text-xs-right">{{!p1.format(m.player1.link_or_text)}} {{!m.player1.player.flag_span}}</td>
             <td class="text-xs-center" nowrap>{{m.scores_csv}}</td>
-            <td class="text-xs-left">{{!p2.format(m.player2.link_or_text)}}</td>
+            <td class="text-xs-left">{{!m.player2.player.flag_span}} {{!p2.format(m.player2.link_or_text)}}</td>
             <% round = m.round_name %>
         </tr>
         <% group = m.group %>

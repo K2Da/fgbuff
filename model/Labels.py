@@ -1,20 +1,20 @@
 from model.Label import Label
 
 label_setting = [
-    Label('2016',            '16',              '2016', 'CadetBlue'),
+    Label('2016',            '16',      '2016', 'CadetBlue'),
 
-    Label('CPT',             'CPT',             'Capcom Pro Tour', 'RoyalBlue'),
+    Label('CPT',             'CPT',     'Capcom Pro Tour', 'RoyalBlue'),
 
-    Label('NA',              'NA',              'North America', 'Indigo'),
-    Label('EU',              'LA',              'Latin America', 'Indigo'),
-    Label('AO',              'AO',              'Asia/Oceania',  'Indigo'),
-    Label('LA',              'EU',              'Europe',        'Indigo'),
+    Label('NA',              'NA',      'North America', 'Indigo'),
+    Label('LA',              'LA',      'Latin America', 'Indigo'),
+    Label('AO',              'AO',      'Asia/Oceania',  'Indigo'),
+    Label('EU',              'EU',      'Europe',        'Indigo'),
 
-    Label('Ranking',         'Ranking',         'Ranking',       '#191970'),
-    Label('Premier',         'Premier',         'Premier',       '#191970'),
-    Label('Evo',             'Evolution',       'Evolution',      '#191970'),
-    Label('Regional Finals', 'Regional Finals', 'Regional Finals', '#191970'),
-    Label('LCQ',             'LCQ',             'Last Chance Qualifier', '#191970'),
+    Label('Ranking',         'Ranking', 'Ranking',       '#191970'),
+    Label('Premier',         'Premier', 'Premier',       '#191970'),
+    Label('Evo',             'Evo',     'Evolution',      '#191970'),
+    Label('Regional Finals', 'RF',      'Regional Finals', '#191970'),
+    Label('LCQ',             'LCQ',     'Last Chance Qualifier', '#191970'),
 ]
 
 label_dictionary = None
@@ -31,5 +31,4 @@ def labels():
 
 def labels_from_string(string: str):
     label_dic = labels()
-    print(label_dic)
     return [label_dic[s.strip()] for s in string.split(',')]

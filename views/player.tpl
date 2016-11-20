@@ -1,7 +1,13 @@
 % from operator import attrgetter
 <% player = pool.players[player_id] %>
 % rebase('base.tpl', title=player.name)
+<div class="col-xs-12">
 <p class="display-4">{{player.name}}</p>
+    <dl class="row">
+        <dt class="col-sm-2 text-xs-right">Country</dt>
+        <dd class="col-sm-9">{{!player.flag_span}} {{player.country_name}}</dd>
+    </dl>
+</div>
 
 <div class="col-xs-12 col-lg-4">
     <h5>Matchups</h5>
@@ -10,7 +16,7 @@
         % if vs.player_id == player_id:
             <tr>
                 <td>
-                    vs. {{!vs.opponent.link}}<br />
+                    vs. {{!vs.opponent.flag_span}} {{!vs.opponent.link}}<br />
                     {{!vs.wl}}
                 </td>
                 <td class="text-xs-center" style="vertical-align: middle; font-size: 150%;"><a href="/vs/{{player.url}}/{{vs.opponent.url}}">{{vs.win}} - {{vs.lose}}</a></td>
@@ -59,18 +65,18 @@
                     m.p1_win and m.player1.player.id == player.id
                  or m.p2_win and m.player2.player.id == player.id
                 ) else 'table-danger'
-                left, center, right, emoji, rank = (
-                    m.player1.link_or_text, m.scores_csv, m.player2.link_or_text, m.player2.rank_emoji, m.player2.rank_text
+                left, center, right = (
+                    m.player1, m.scores_csv, m.player2
                 ) if m.player1.player.id == player.id else (
-                    m.player2.link_or_text, m.scores_csv[::-1], m.player1.link_or_text, m.player1.rank_emoji, m.player1.rank_text
+                    m.player2, m.scores_csv[::-1], m.player1
                 )
             %>
             <td class="text-xs-center">{{m.round_name}}</td>
-            <td class="text-xs-right">{{!left}}</td>
+            <td class="text-xs-right">{{!left.link_or_text}}</td>
             <td class="text-xs-center {{score_class}}">{{center}}</td>
-            <td class="text-xs-left">{{!right}}</td>
-            <td class="text-xs-right">{{emoji}}</td>
-            <td class="text-xs-right">{{rank}}</td>
+            <td class="text-xs-left">{{!right.player.flag_span}} {{!right.link_or_text}}</td>
+            <td class="text-xs-right">{{right.rank_emoji}}</td>
+            <td class="text-xs-right">{{right.rank_text}}</td>
         </tr>
         <% tournament, group = m.tournament, m.group %>
     % end

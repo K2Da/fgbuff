@@ -19,6 +19,7 @@
         % end
         <style>
             .table td, .table th { padding: 0.25em; }
+            .flag-icon { box-shadow: 1px 1px gray; }
         </style>
     </head>
     <body>

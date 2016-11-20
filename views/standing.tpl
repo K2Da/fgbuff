@@ -12,12 +12,13 @@
                 <td>{{i + 1}}</td>
             % end
             <td>w / l / d</td>
+            <td>T</td>
             <td>rate</td>
         </tr>
         % for i, p1 in enumerate(players):
             <tr>
                 <td>{{i + 1}}</td>
-                <td style="text-align: left">{{!p1.link}}</td>
+                <td style="text-align: left">{{!p1.flag_span}} {{!p1.link}}</td>
                 % w, l, d = 0, 0, 0,
                 % for p2 in players:
                     % if p1.id == p2.id:
@@ -37,6 +38,7 @@
                     % end
                 % end
                 <td>{{w}} / {{l}} / {{d}}</td>
+                <td>{{w+l+d}}</td>
                 % if w + l + d != 0:
                     <td>{{round(w/(w + l + d) * 100)}}%</td>
                 % else:
