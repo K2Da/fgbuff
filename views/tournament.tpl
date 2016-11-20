@@ -1,7 +1,14 @@
 % from operator import attrgetter
-% rebase('base.tpl', title=fg_tournament['name'])
+% tournament = pool.tournaments[tournament_id]
+% rebase('base.tpl', title=tournament.name)
 <div class="col-xs-12">
-    <h4 class="display-4">{{fg_tournament['name']}}</h4>
+    <h4 class="display-4">{{tournament.name}}</h4>
+    <dl class="row">
+        <dt class="col-sm-2 text-xs-right">Date</dt>
+        <dd class="col-sm-9">{{tournament.date_string}}</dd>
+        <dt class="col-sm-2 text-xs-right">Labels</dt>
+        <dd class="col-sm-9">{{tournament.labels_text}}</dd>
+    </dl>
 </div>
 
 <div class="col-xs-12 col-lg-4">

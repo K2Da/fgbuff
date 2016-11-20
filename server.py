@@ -21,8 +21,8 @@ def tournaments():
 
 @app.route('/tournament/<challo_url>')
 def tournament(challo_url):
-    fg_tournament, pool = Pool.init_for_tournament(challo_url)
-    return cache(request.path, template('tournament', pool=pool, fg_tournament=fg_tournament))
+    tournament_id, pool = Pool.init_for_tournament(challo_url)
+    return cache(request.path, template('tournament', pool=pool, tournament_id=tournament_id))
 
 
 @app.route('/vs/<p1>/<p2>')

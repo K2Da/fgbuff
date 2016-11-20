@@ -4,7 +4,7 @@ from database.common import Table, CustomQueries, TranQueries
 def select_by_tournament_id(challo_url):
     fg_tournament = Table('fg_tournament').select_one('challo_url = %s', (challo_url,))
     tournament_id = fg_tournament['id']
-    return fg_tournament, {
+    return tournament_id, {
         'fg_tournament':
             [fg_tournament],
         'fg_player':

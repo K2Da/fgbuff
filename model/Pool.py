@@ -1,8 +1,10 @@
 import sys
 import re
+import model.Labels
 from database import service
 from typing import Dict, List, Any
 from operator import attrgetter
+from functools import reduce
 
 
 class Pool:
@@ -55,8 +57,8 @@ class Pool:
 
     @classmethod
     def init_for_tournament(cls, challo_url):
-        fg_tournament, pool = service.select_by_tournament_id(challo_url)
-        return fg_tournament, cls(pool)
+        tournament_id, pool = service.select_by_tournament_id(challo_url)
+        return tournament_id, cls(pool)
 
     @classmethod
     def init_for_vs(cls, p1, p2):
@@ -87,7 +89,7 @@ class Pool:
     @classmethod
     def init_for_standing(cls, standing_url):
         standing, pool = service.select_for_vs_table(standing_url)
-        return Standing(None, standing), cls(pool)
+        return Standing(Pool({}), standing), cls(pool)
 
 
 class Row:
@@ -152,6 +154,16 @@ class Touranament(Row):
     @property
     def end_at_desc(self):
         return -(self.end_at.year * 1000 + self.end_at.month * 100 + self.end_at.day)
+
+    @property
+    def labels_short(self):
+        labels = model.Labels.labels_from_string(self.get('labels', ''))
+        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.short, labels))
+
+    @property
+    def labels_text(self):
+        labels = model.Labels.labels_from_string(self.get('labels', ''))
+        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.text, labels))
 
 
 class Participant(Row):
