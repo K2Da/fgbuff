@@ -34,7 +34,7 @@
             % continue
         % end
         <tr>
-            <td class="text-xs-left"><a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a><td>
+            <td class="text-xs-left">{{!p.tournament.flag_span}} <a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a><td>
             <td class="text-xs-right">{{p.rank_emoji}}</td>
             <td class="text-xs-right">{{p.rank_text}}</td>
             <td class="text-xs-right" nowrap>{{p.tournament.date_string}}</td>
