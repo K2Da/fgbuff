@@ -10,43 +10,50 @@ debug(config.debug)
 
 
 @app.route('/players')
+@cache
 def players():
-    return cache(request.path, template('players', pool=Pool.init_for_players()))
+    return template('players', pool=Pool.init_for_players())
 
 
 @app.route('/tournaments')
+@cache
 def tournaments():
-    return cache(request.path, template('tournaments', pool=Pool.init_for_tournaments()))
+    return template('tournaments', pool=Pool.init_for_tournaments())
 
 
 @app.route('/tournament/<challo_url>')
+@cache
 def tournament(challo_url):
     tournament_id, pool = Pool.init_for_tournament(challo_url)
-    return cache(request.path, template('tournament', pool=pool, tournament_id=tournament_id))
+    return template('tournament', pool=pool, tournament_id=tournament_id)
 
 
 @app.route('/vs/<p1>/<p2>')
+@cache
 def vs(p1, p2):
     p1_id, p2_id, pool = Pool.init_for_vs(p1, p2)
-    return cache(request.path, template('vs', pool=pool, p1=p1_id, p2=p2_id))
+    return template('vs', pool=pool, p1=p1_id, p2=p2_id)
 
 
 @app.route('/player/<player_url>')
+@cache
 def player(player_url):
     player_id, pool = Pool.init_for_player(player_url)
-    return cache(request.path, template('player', pool=pool, player_id=player_id))
+    return template('player', pool=pool, player_id=player_id)
 
 
 @app.route('/standing/<standing_url>')
+@cache
 def standing(standing_url):
     s, pool = Pool.init_for_standing(standing_url)
-    return cache(request.path, template('standing', pool=pool, standing=s))
+    return template('standing', pool=pool, standing=s)
 
 
 @app.route('/vstable')
+@cache
 def vstable():
     s, pool = Pool.init_for_standing('cpt-finals-2016')
-    return cache(request.path, template('standing', pool=pool, standing=s))
+    return template('standing', pool=pool, standing=s)
 
 
 @app.route('/static/<filepath:path>')
@@ -55,6 +62,7 @@ def server_static(filepath):
 
 
 @app.route('/')
+@cache
 def index():
     return template('index', count=service.select_match_count())
 
