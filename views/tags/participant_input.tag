@@ -30,7 +30,7 @@
     this.on('updated', () => {
         if (self.awesomplete == null) {
             var input = self.root.firstElementChild
-            self.awesomeplete = new Awesomplete(input, { list: '#participants_li', minChars: 1, autoFirst: true })
+            self.awesomplete = new Awesomplete(input, { list: '#participants_li', minChars: 1, autoFirst: true })
             input.addEventListener('awesomplete-selectcomplete', self.onParticipantChange)
         }
     })

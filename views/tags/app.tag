@@ -27,7 +27,6 @@
     var self = this
 
     RiotControl.on('refresh', (store) => {
-        console.log('refre')
         self.store = store
         self.update()
     })

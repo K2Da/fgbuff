@@ -10,6 +10,8 @@
         <dd class="col-sm-9">{{tournament.date_string}}</dd>
         <dt class="col-sm-2 text-xs-right">Labels</dt>
         <dd class="col-sm-9">{{tournament.labels_text}}</dd>
+        <dt class="col-sm-2 text-xs-right">Bracket</dt>
+        <dd class="col-sm-9">{{!tournament.tournament_link}}</dd>
     </dl>
 </div>
 

@@ -7,7 +7,7 @@
             <col width="200px">
         </colgroup>
         <tr each={ this.store.matches(this.group_id, this.round) }>
-            <td><a onclick={ this.onDelete }>-</a></td>
+            <td><a onclick={ this.onDelete }>□</a></td>
             <td>
                 <participant-input
                     side           = 'player1_id'
@@ -42,7 +42,6 @@
     this.round    = opts.round
 
     onScoreChange(e) {
-        console.log(e.item.id)
         this.store.update_match(e.item.id, [['scores_csv', e.srcElement.value]])
     }
 

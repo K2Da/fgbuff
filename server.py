@@ -6,7 +6,7 @@ from bottle import Bottle, run, template, request, response, debug, static_file
 from model.Pool import Pool
 
 app = Bottle()
-debug(True)
+debug(config.debug)
 
 
 @app.route('/players')
@@ -56,7 +56,7 @@ def server_static(filepath):
 
 @app.route('/')
 def index():
-    return template('index')
+    return template('index', count=service.select_match_count())
 
 
 @app.route('/edit/<url>')

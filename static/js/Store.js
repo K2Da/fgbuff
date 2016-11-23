@@ -74,9 +74,13 @@ class Store {
         return ret.sort((a, b) => {
             let al = self.last_at_losers(a.id)
             let bl = self.last_at_losers(b.id)
-            al = (al == 0) ? 1000 : al * -10 + self.last_at_winners(a.id)
-            bl = (bl == 0) ? 1000 : bl * -10 + self.last_at_winners(b.id)
-            return bl - al
+            let aw = self.last_at_winners(a.id)
+            let bw = self.last_at_winners(b.id)
+            if (al == 0 && aw != 0) al = -100
+            if (bl == 0 && bw != 0) bl = -100
+            a = (al == 0 && aw == 0) ? 1000 - a.id : al * -10 + aw
+            b = (bl == 0 && bw == 0) ? 1000 - b.id : bl * -10 + bw
+            return b - a
         })
     }
 
@@ -169,8 +173,15 @@ class Store {
         return this.pool.challo_group.find((row) => row.id == group_id)
     }
 
-    add_round(group_id) { this.pool_editors[group_id].add_round() }
+    add_round(group_id, move) { this.pool_editors[group_id].add_round(move) }
+    fill_rounds(group_id) { this.pool_editors[group_id].fill_rounds() }
+    delete_group(group_id) { this.pool_editors[group_id].delete_group() }
+
     clear_matches(group_id) { this.pool_editors[group_id].clear_matches() }
+
+    pool_editor(group_id) {
+        return this.pool_editors[group_id]
+    }
 
     max_id(table) {
         let max = 0
@@ -195,6 +206,11 @@ class PoolEditor {
     add_round() { }
 
     remove_round() { }
+
+    delete_group(group_id) {
+        this.pool.challo_group = this.pool.challo_group.filter((x, i, self) => x['id'] != this.group_id)
+        this.pool.challo_match = this.pool.challo_match.filter((x, i, self) => x['group_id'] != this.group_id)
+    }
 
     match_count_in_round(round) {
         self = this
@@ -256,13 +272,16 @@ class DoubleElimination extends PoolEditor {
         }
     }
 
-    add_round() {
-        this.update_round(this.current_total_round, this.current_total_round + 1)
+    add_round(move) {
+        if (move) { this.update_round(this.current_total_round, this.current_total_round + 1) }
         this.current_total_round++
+        this.fill_rounds()
+    }
+
+    fill_rounds() {
         let match_counts = this.match_numbers_by_total_rounds(this.current_total_round)
         let max = 0
         let min = 0
-        console.log(match_counts)
         for (let round in match_counts) {
             round = Number(round)
             if (round > max) max = round
@@ -284,8 +303,6 @@ class DoubleElimination extends PoolEditor {
     }
 
     update_round(from, to) {
-        console.log(from)
-        console.log(to)
         var w_diff = this.max_winners_round(to) - this.max_winners_round(from)
         var l_diff = this.max_losers_round(to) - this.max_losers_round(from)
 

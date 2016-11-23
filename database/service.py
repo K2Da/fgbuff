@@ -129,3 +129,8 @@ def insert_comment(data):
 
 def select_comments(data):
     return TranQueries.select_comments(data['page_url'])
+
+
+def select_match_count():
+    return CustomQueries.select_matche_count()[0]['cnt']
+

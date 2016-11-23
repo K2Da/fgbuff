@@ -123,6 +123,12 @@ select p.*
         """.format(sql), param)
         return cursor_to_array(CustomQueries.cursor)
 
+    @staticmethod
+    def select_matche_count():
+        CustomQueries.cursor.execute("select count(*) cnt from challo_match")
+        val = cursor_to_array(CustomQueries.cursor)
+        return val
+
 
 class TranQueries:
     connection = get_connection(config.tran_string)
