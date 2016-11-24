@@ -18,11 +18,12 @@ def select_by_tournament_id(challo_url):
     }
 
 
-def select_by_player_url(player_url):
+def select_by_player_url(player_url, labels):
     fg_player = Table('fg_player').select_one('url = %s', (player_url,))
-    challo_match = CustomQueries.select_matches_by_player(fg_player['id'])
+    tournaments = CustomQueries.select_tournamebts_with_labels(labels)
+    challo_match = CustomQueries.select_matches_by_player(fg_player['id'], tournaments)
     challo_participant = Table('challo_participant').select_in(
-        'id', [cm['player1_id'] for cm in challo_match] + [cm['player2_id'] for cm in challo_match]
+        'tournament_id', [t['id'] for t in tournaments]
     )
     return fg_player['id'], {
         'fg_player':
@@ -32,7 +33,7 @@ def select_by_player_url(player_url):
         'challo_match':
             challo_match,
         'fg_tournament':
-            Table('fg_tournament').select_all(),
+            tournaments,
         'challo_group':
             Table('challo_group').select_all(),
     }
@@ -60,30 +61,33 @@ def select_for_create_vs():
     }
 
 
-def select_for_vs_table(standing_url):
+def select_for_vs_table(standing_url, labels):
+    tournaments = CustomQueries.select_tournamebts_with_labels(labels)
     standing = Table('fg_standing').select_one('url = %s', (standing_url,))
     urls = [s.strip() for s in standing['participants'].split(',')]
     return standing, {
-        'fg_tournament': Table('fg_tournament').select_all(),
+        'fg_tournament': tournaments,
         'fg_player': Table('fg_player').select_in('url', urls),
-        'challo_match': CustomQueries.select_matches_by_players(urls),
+        'challo_match': CustomQueries.select_matches_by_players(urls, tournaments),
         'challo_participant': CustomQueries.select_participants_by_players(urls),
         'challo_group': Table('challo_group').select_all(),
     }
 
 
-def select_for_tournaments():
+def select_for_tournaments(labels):
+    tournaments = CustomQueries.select_tournamebts_with_labels(labels)
     return {
-        'fg_tournament': Table('fg_tournament').select_all(),
+        'fg_tournament': tournaments
     }
 
 
-def select_for_vs(p1, p2):
+def select_for_vs(p1, p2, labels):
     player_1 = Table('fg_player').select_one('url = %s', (p1,))
     player_2 = Table('fg_player').select_one('url = %s', (p2,))
+    tournaments = CustomQueries.select_tournamebts_with_labels(labels)
     challo_participant = Table('challo_participant').select_in('player_id', [player_1['id'], player_2['id']])
-    challo_match = (CustomQueries.select_matches_by_player(player_1['id']) +
-                    CustomQueries.select_matches_by_player(player_2['id']))
+    challo_match = (CustomQueries.select_matches_by_player(player_1['id'], tournaments) +
+                    CustomQueries.select_matches_by_player(player_2['id'], tournaments))
 
     ps = [(p['tournament_id'], p['id']) for p in challo_participant]
     cut_match = [
@@ -99,7 +103,7 @@ def select_for_vs(p1, p2):
         'challo_match':
             cut_match,
         'fg_tournament':
-            Table('fg_tournament').select_all(),
+            tournaments,
         'challo_group':
             Table('challo_group').select_all(),
     }
@@ -132,5 +136,5 @@ def select_comments(data):
 
 
 def select_match_count():
-    return CustomQueries.select_matche_count()[0]['cnt']
+    return CustomQueries.select_match_count()[0]['cnt']
 

@@ -16,9 +16,10 @@ def players():
 
 
 @app.route('/tournaments')
+@app.route('/tournaments/labels/<labels:path>')
 @cache
-def tournaments():
-    return template('tournaments', pool=Pool.init_for_tournaments())
+def tournaments(labels=None):
+    return template('tournaments', pool=Pool.init_for_tournaments(labels))
 
 
 @app.route('/tournament/<challo_url>')
@@ -29,23 +30,26 @@ def tournament(challo_url):
 
 
 @app.route('/vs/<p1>/<p2>')
+@app.route('/vs/<p1>/<p2>/labels/<labels:path>')
 @cache
-def vs(p1, p2):
-    p1_id, p2_id, pool = Pool.init_for_vs(p1, p2)
+def vs(p1, p2, labels=None):
+    p1_id, p2_id, pool = Pool.init_for_vs(p1, p2, labels)
     return template('vs', pool=pool, p1=p1_id, p2=p2_id)
 
 
 @app.route('/player/<player_url>')
+@app.route('/player/<player_url>/labels/<labels:path>')
 @cache
-def player(player_url):
-    player_id, pool = Pool.init_for_player(player_url)
+def player(player_url, labels=None):
+    player_id, pool = Pool.init_for_player(player_url, labels)
     return template('player', pool=pool, player_id=player_id)
 
 
 @app.route('/standing/<standing_url>')
+@app.route('/standing/<standing_url>/labels/<labels:path>')
 @cache
-def standing(standing_url):
-    s, pool = Pool.init_for_standing(standing_url)
+def standing(standing_url, labels=None):
+    s, pool = Pool.init_for_standing(standing_url, labels)
     return template('standing', pool=pool, standing=s)
 
 

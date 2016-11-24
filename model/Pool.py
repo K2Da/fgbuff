@@ -62,18 +62,18 @@ class Pool:
         return tournament_id, cls(pool)
 
     @classmethod
-    def init_for_vs(cls, p1, p2):
-        p1_id, p2_id, pool = service.select_for_vs(p1, p2)
+    def init_for_vs(cls, p1, p2, labels):
+        p1_id, p2_id, pool = service.select_for_vs(p1, p2, labels)
         return p1_id, p2_id, cls(pool)
 
     @classmethod
-    def init_for_player(cls, player_url):
-        player_id, pool = service.select_by_player_url(player_url)
+    def init_for_player(cls, player_url, labels):
+        player_id, pool = service.select_by_player_url(player_url, labels)
         return player_id, cls(pool)
 
     @classmethod
-    def init_for_tournaments(cls):
-        return cls(service.select_for_tournaments())
+    def init_for_tournaments(cls, labels):
+        return cls(service.select_for_tournaments(labels))
 
     @classmethod
     def init_for_players(cls):
@@ -88,8 +88,8 @@ class Pool:
         return cls(service.select_for_create_vs())
 
     @classmethod
-    def init_for_standing(cls, standing_url):
-        standing, pool = service.select_for_vs_table(standing_url)
+    def init_for_standing(cls, standing_url, labels):
+        standing, pool = service.select_for_vs_table(standing_url, labels)
         return Standing(Pool({}), standing), cls(pool)
 
 
@@ -366,11 +366,18 @@ class Match(Row):
     @property
     def round_name(self):
         max_r = self.group.max_round
+        min_r = self.group.min_round
         r = self.round
-        if r < 0:
+        if r == min_r:
+            return "Losers Final".format(abs(r))
+        elif r == min_r + 1:
+            return "Losers Semi Final".format(abs(r))
+        elif r < 0:
             return "Losers {0}".format(abs(r))
         elif r == max_r:
             return "Grand Final"
+        elif r == max_r - 2:
+            return "Winners Semi Final"
         elif r == max_r - 1:
             return "Winners Final"
         else:

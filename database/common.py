@@ -85,19 +85,21 @@ class CustomQueries:
     cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     @staticmethod
-    def select_matches_by_player(player_id):
+    def select_matches_by_player(player_id, tournaments):
+        sql, param = in_clause([t['id'] for t in tournaments])
         CustomQueries.cursor.execute("""
 select m.*
   from challo_match       m inner
   join challo_participant p on m.tournament_id = p.tournament_id and (m.player1_id = p.id or m.player2_id = p.id) inner
   join fg_player f          on f.id = p.player_id
- where f.id = %s
-        """, (player_id,))
+ where f.id = %s and m.tournament_id in ({0})
+        """.format(sql), [player_id, ] + param)
         return cursor_to_array(CustomQueries.cursor)
 
     @staticmethod
-    def select_matches_by_players(player_urls):
-        sql, param = in_clause(player_urls)
+    def select_matches_by_players(player_urls, tournaments):
+        p_sql, p_param = in_clause(player_urls)
+        t_sql, t_param = in_clause([t['id'] for t in tournaments])
         CustomQueries.cursor.execute("""
 select m.*
         from challo_match       m
@@ -108,7 +110,8 @@ select m.*
   inner join fg_player f1 on f1.id = p1.player_id
   inner join fg_player f2 on f2.id = p2.player_id
        where f1.url in ({0}) and f2.url in ({0})
-        """.format(sql), param + param)
+         and m.tournament_id in ({1})
+        """.format(p_sql, t_sql), p_param + p_param + t_param)
         return cursor_to_array(CustomQueries.cursor)
 
     @staticmethod
@@ -124,10 +127,24 @@ select p.*
         return cursor_to_array(CustomQueries.cursor)
 
     @staticmethod
-    def select_matche_count():
+    def select_match_count():
         CustomQueries.cursor.execute("select count(*) cnt from challo_match")
         val = cursor_to_array(CustomQueries.cursor)
         return val
+
+    @staticmethod
+    def select_tournamebts_with_labels(labels):
+        if labels is None:
+            return Table('fg_tournament').select_all()
+
+        ls = labels.split('/')
+        sql = ' and '.join(["labels like %s".format(l) for l in ls])
+        param = ['%{0}%'.format(l) for l in ls]
+        CustomQueries.cursor.execute("""
+select * from fg_tournament
+ where {0}
+""".format(sql), param)
+        return cursor_to_array(CustomQueries.cursor)
 
 
 class TranQueries:
