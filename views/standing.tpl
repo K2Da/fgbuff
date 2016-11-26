@@ -3,6 +3,8 @@
 % urls = standing.participants
 <div class="col-xs-12">
     <h4 class="display-4">{{standing.name}}</h4>
+    % include('labels.tpl')
+    % tt = 0
     <table class="table-bordered table-hover" style="margin-top: 20px; width: {{len(pool.players)*36 + 342}}px; text-align: center;">
         <tr>
             % players = sorted(pool.players.values(), key=lambda p: urls.index(p.url))
@@ -38,6 +40,7 @@
                     % end
                 % end
                 <td>{{w}} / {{l}} / {{d}}</td>
+                % tt += w + l + d
                 <td>{{w+l+d}}</td>
                 % if w + l + d != 0:
                     <td>{{round(w/(w + l + d) * 100)}}%</td>
@@ -47,4 +50,7 @@
             </tr>
         % end
     </table>
+    <div>
+        <small>Total: {{tt}} / Match: {{len(pool.matches)}}</small>
+    </div>
 </div>

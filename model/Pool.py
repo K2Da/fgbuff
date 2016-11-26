@@ -9,14 +9,18 @@ from functools import reduce
 
 
 class Pool:
-    def __init__(self, data: Dict[str, List[Dict]]):
-        # rows
-        self.fg_tournament = data['fg_tournament'] if 'fg_tournament' in data else []
-        self.fg_player = data['fg_player'] if 'fg_player' in data else []
+    def __init__(self, data: Dict[str, Any]):
+        # for link
+        self.base_url = data.get('base_url', [])
+        self.labels = data.get('labels', [])
 
-        self.challo_participant = data['challo_participant'] if 'challo_participant' in data else []
-        self.challo_match = data['challo_match'] if 'challo_match' in data else []
-        self.challo_group = data['challo_group'] if 'challo_group' in data else []
+        # rows
+        self.fg_tournament = data.get('fg_tournament', [])
+        self.fg_player = data.get('fg_player', [])
+
+        self.challo_participant = data.get('challo_participant', [])
+        self.challo_match = data.get('challo_match', [])
+        self.challo_group = data.get('challo_group', [])
 
         # object array
         self.players = {p['id']: Player(self, p) for p in self.fg_player}
@@ -33,6 +37,45 @@ class Pool:
             t['challo_id']: t['id'] for t in data['fg_tournament']
         } if 'fg_tournament' in data else {}
         self._vs = None
+        self._wl_counted = False
+
+    def link_with_tags(self, text: str, tags: list) -> str:
+        return '<a href="{0}">{1}</a>'.format(
+            self.href_with_tags(tags), text
+        )
+
+    def href_with_tags(self, tags: list) -> str:
+        if not tags:
+            return '/{0}'.format(self.base_url)
+        return '/{0}/labels/{1}'.format(
+            self.base_url, '/'.join([t.key for t in tags])
+        )
+
+    def labels_included(self, labels: list, index: int) -> bool:
+        if len(self.labels) == 0 and index == 0:
+            return True
+
+        if len(self.labels) < len(labels):
+            return False
+
+        for a, b in zip(labels, self.labels):
+            if a != b:
+                return False
+
+        return True
+
+    def labels_same(self, labels: list) -> bool:
+        if len(self.labels) != len(labels):
+            return False
+
+        for a, b in zip(labels, self.labels):
+            if a != b:
+                return False
+
+        return True
+
+    def labels_text(self) -> str:
+        return ', '.join([l.text for l in self.labels])
 
     @property
     def vs(self):
@@ -56,6 +99,18 @@ class Pool:
 
         return self._vs
 
+    def sum_wl(self):
+        if self._wl_counted:
+            return
+        for m in self.matches.values():
+            if m.p1_win:
+                m.player1.player.add_win()
+                m.player2.player.add_lose()
+            if m.p2_win:
+                m.player2.player.add_win()
+                m.player1.player.add_lose()
+        self._wl_counted = True
+
     @classmethod
     def init_for_tournament(cls, challo_url):
         tournament_id, pool = service.select_by_tournament_id(challo_url)
@@ -76,16 +131,12 @@ class Pool:
         return cls(service.select_for_tournaments(labels))
 
     @classmethod
-    def init_for_players(cls):
-        return cls(service.select_for_players())
+    def init_for_players(cls, labels):
+        return cls(service.select_for_players(labels))
 
     @classmethod
     def init_for_create_rel(cls):
         return cls(service.select_for_create_rel())
-
-    @classmethod
-    def init_for_create_vs(cls):
-        return cls(service.select_for_create_vs())
 
     @classmethod
     def init_for_standing(cls, standing_url, labels):
@@ -407,7 +458,19 @@ class Match(Row):
 class Player(Row, CountryMixin):
     def __init__(self, pool, challo_row):
         self.re = None
+        self._win = None
+        self._lose = None
         super(Player, self).__init__(pool, challo_row)
+
+    def add_win(self):
+        if self._win is None:
+            self._win = 0
+        self._win += 1
+
+    def add_lose(self):
+        if self._lose is None:
+            self._lose = 0
+        self._lose += 1
 
     @property
     def url(self):
@@ -431,11 +494,17 @@ class Player(Row, CountryMixin):
 
     @property
     def win(self):
-        return self.get('win', 0)
+        if self._win is None:
+            self._pool.sum_wl()
+
+        return self._win or 0
 
     @property
     def lose(self):
-        return self.get('lose', 0)
+        if self._win is None:
+            self._pool.sum_wl()
+
+        return self._lose or 0
 
     @property
     def sort_key(self):

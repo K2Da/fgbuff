@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
 import config
+import model.Labels
 
 
 def get_connection(string):
@@ -86,6 +87,9 @@ class CustomQueries:
 
     @staticmethod
     def select_matches_by_player(player_id, tournaments):
+        if not tournaments:
+            return []
+
         sql, param = in_clause([t['id'] for t in tournaments])
         CustomQueries.cursor.execute("""
 select m.*
@@ -133,18 +137,18 @@ select p.*
         return val
 
     @staticmethod
-    def select_tournamebts_with_labels(labels):
+    def select_tournamets_with_labels(labels: str) -> (list, list):
         if labels is None:
-            return Table('fg_tournament').select_all()
+            return [], Table('fg_tournament').select_all()
 
-        ls = labels.split('/')
-        sql = ' and '.join(["labels like %s".format(l) for l in ls])
-        param = ['%{0}%'.format(l) for l in ls]
+        mls = model.Labels.labels_from_url(labels)
+        sql = ' and '.join([m.where for m in mls])
+        param = [m.param for m in mls]
         CustomQueries.cursor.execute("""
 select * from fg_tournament
  where {0}
 """.format(sql), param)
-        return cursor_to_array(CustomQueries.cursor)
+        return mls, cursor_to_array(CustomQueries.cursor)
 
 
 class TranQueries:

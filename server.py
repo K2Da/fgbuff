@@ -10,9 +10,10 @@ debug(config.debug)
 
 
 @app.route('/players')
+@app.route('/players/labels/<labels:path>')
 @cache
-def players():
-    return template('players', pool=Pool.init_for_players())
+def players(labels=None):
+    return template('players', pool=Pool.init_for_players(labels))
 
 
 @app.route('/tournaments')

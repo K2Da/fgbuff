@@ -2,12 +2,14 @@
 <% player = pool.players[player_id] %>
 % rebase('base.tpl', title=player.name)
 <div class="col-xs-12">
-<p class="display-4">{{player.name}}</p>
+    <p class="display-4">{{player.name}}</p>
     <dl class="row">
         <dt class="col-sm-2 text-xs-right">Country</dt>
         <dd class="col-sm-9">{{!player.flag_span}} {{player.country_name}}</dd>
     </dl>
+    % include('labels.tpl')
 </div>
+
 
 <div class="col-xs-12 col-lg-4">
     <h5>Matchups</h5>

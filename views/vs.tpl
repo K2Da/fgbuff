@@ -4,9 +4,9 @@
 % rebase('base.tpl', title='{0} vs. {1}'.format(player1.name, player2.name))
 <p class="display-4">{{player1.name}} vs. {{player2.name}}</p>
 
-<h5>Matches</h5>
-    <% tournament, group = None, None %>
-    <table class="table">
+% include('labels.tpl')
+<% tournament, group = None, None %>
+<table class="table">
     % for m in sorted(pool.matches.values(), key=attrgetter('end_at_desc', 'group_id', 'sort_key', 'id_desc')):
         % if tournament is None or tournament != m.tournament:
             <tr>

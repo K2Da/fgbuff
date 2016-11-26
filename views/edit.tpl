@@ -20,14 +20,14 @@
         <app></app>
 
         <script type="riot/tag">
-            % include('tags/matches.tag')
-            % include('tags/player_input.tag')
-            % include('tags/players.tag')
-            % include('tags/bracket.tag')
-            % include('tags/group.tag')
-            % include('tags/app.tag')
-            % include('tags/participants_li.tag')
-            % include('tags/participant_input.tag')
+            % include('tags/matches.tpl')
+            % include('tags/player_input.tpl')
+            % include('tags/players.tpl')
+            % include('tags/bracket.tpl')
+            % include('tags/group.tpl')
+            % include('tags/app.tpl')
+            % include('tags/participants_li.tpl')
+            % include('tags/participant_input.tpl')
         </script>
 
         <script>
