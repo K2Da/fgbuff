@@ -16,6 +16,10 @@ class Label:
     def param(self):
         return '%{0}%'.format(self.key)
 
+    @property
+    def is_link(self):
+        return True
+
 
 class CountryLabel(Label):
     @property
@@ -25,4 +29,18 @@ class CountryLabel(Label):
     @property
     def param(self):
         return self.key
+
+
+class MenuLabel(Label):
+    @property
+    def where(self):
+        return None
+
+    @property
+    def param(self):
+        return None
+
+    @property
+    def is_link(self):
+        return False
 

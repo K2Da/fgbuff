@@ -142,8 +142,8 @@ select p.*
             return [], Table('fg_tournament').select_all()
 
         mls = model.Labels.labels_from_url(labels)
-        sql = ' and '.join([m.where for m in mls])
-        param = [m.param for m in mls]
+        sql = ' and '.join([m.where for m in mls if m.where])
+        param = [m.param for m in mls if m.param]
         CustomQueries.cursor.execute("""
 select * from fg_tournament
  where {0}

@@ -1,8 +1,10 @@
-from model.Label import Label, CountryLabel
+from model.Label import Label, CountryLabel, MenuLabel
 import model.Countries
 
 label_setting = [
-    Label('Ver',      'Ver.',    'Versions'),
+    MenuLabel('Ver',      'Ver.',    'Versions'),
+    MenuLabel('Other',    'Other',   'Others'),
+
     Label('SFV',      'SFV',     'Street Fighter V'),
     Label('SFIV',     'SFIV',    'Street Fighter IV'),
 
@@ -20,24 +22,27 @@ label_setting = [
     Label('Evo',      'Evo',     'Evolution'),
     Label('RF',       'RF',      'Regional Finals'),
     Label('LCQ',      'LCQ',     'Last Chance Qualifier'),
+
+    Label('ESL',      'ESL',     'ESL'),
+    Label('RB',       'RedBull', 'RedBull')
 ]
 
-label_links = {
-    'Ver': {
-        'SFV': [
-            'SFV'
-        ],
-        'SFIV': [
-            'SFIV'
-        ]
-    },
+label_links = [
+    ('Ver', [
+        ('SFV',  []),
+    ]),
 
-    'CPT': {
-        '2016': [
+    ('CPT', [
+        ('2016', [
             'NA', 'LA', 'AO', 'EU', 'Ranking', 'Premier', 'Evo', 'RF', 'LCQ'
-        ],
-    },
-}
+        ])
+    ]),
+
+    ('Other', [
+        ('ESL', []),
+        ('RB',  []),
+    ])
+]
 
 label_dictionary = None
 links_dicitionary = None
@@ -60,8 +65,8 @@ def links():
     def rec(item):
         if isinstance(item, list):
             return [rec(i) for i in item]
-        if isinstance(item, dict):
-            return {rec(k): rec(v) for k, v in item.items()}
+        if isinstance(item, tuple):
+            return [rec(item[0]), rec(item[1])]
         return ls[item]
 
     global label_links, links_dicitionary

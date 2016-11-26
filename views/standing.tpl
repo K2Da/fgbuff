@@ -11,7 +11,7 @@
             <td> </td>
             <td> </td>
             % for i, p in enumerate(players):
-                <td>{{i + 1}}</td>
+                <td style="width: 2em;">{{i + 1}}</td>
             % end
             <td>w / l / d</td>
             <td>T</td>
