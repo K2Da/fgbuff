@@ -8,7 +8,11 @@ class Store {
                 self.pool = res.body
                 self.pool_editors = {}
                 self.pool.challo_group.forEach((row) => {
-                    self.pool_editors[row.id] = new DoubleElimination(self, row.id)
+                    let editors = {
+                        'DE': DoubleElimination,
+                        'SE': SingleElimination
+                    }
+                    self.pool_editors[row.id] = new editors[row['ttype']](self, row.id)
                 })
                 self.trigger('refresh', self)
                 self.tournament = self.pool.fg_tournament[0]
@@ -169,6 +173,17 @@ class Store {
         }
     }
 
+    add_group() {
+        this.pool.challo_group.push({
+            tournament_id : this.tournament.id,
+            id            : this.max_id('challo_group') + 1,
+            min_round     : null,
+            max_round     : null,
+            name          : null,
+            ttype         : null,
+        })
+    }
+
     refresh() {
         this.trigger('refresh', self)
     }
@@ -181,12 +196,6 @@ class Store {
     group(group_id) {
         return this.pool.challo_group.find((row) => row.id == group_id)
     }
-
-    add_round(group_id, move) { this.pool_editors[group_id].add_round(move) }
-    fill_rounds(group_id) { this.pool_editors[group_id].fill_rounds() }
-    delete_group(group_id) { this.pool_editors[group_id].delete_group() }
-
-    clear_matches(group_id) { this.pool_editors[group_id].clear_matches() }
 
     pool_editor(group_id) {
         return this.pool_editors[group_id]
@@ -302,15 +311,6 @@ class DoubleElimination extends PoolEditor {
         this.store.update('challo_group', this.group.id, [['max_round', max], ['min_round', min]])
     }
 
-    get_participants_count(match_counts) {
-        console.log(match_counts)
-        if (match_counts[1] != match_counts[-1] * 2) {
-            return match_counts[1] * 2 + match_counts[-1]
-        } else {
-            return match_counts[1] * 2
-        }
-    }
-
     update_round(from, to) {
         var w_diff = this.max_winners_round(to) - this.max_winners_round(from)
         var l_diff = this.max_losers_round(to) - this.max_losers_round(from)
@@ -356,5 +356,57 @@ class DoubleElimination extends PoolEditor {
 
     max_losers_round(total_rounds) {
         return total_rounds - 1
+    }
+}
+
+class SingleElimination extends PoolEditor {
+    constructor(store, group_id) {
+        super(store, group_id)
+        this.current_total_round = this.get_total_round()
+        if (this.pool.challo_group.length == 0) {
+            this.add_groups(group_id)
+        }
+    }
+
+    add_round(move) {
+        if (move) { this.update_round(this.current_total_round, this.current_total_round + 1) }
+        this.current_total_round++
+        this.fill_rounds()
+    }
+
+    fill_rounds() {
+        let match_counts = this.match_numbers_by_total_rounds(this.current_total_round)
+        let max = 0
+        let min = 0
+        for (let round in match_counts) {
+            round = Number(round)
+            if (round > max) max = round
+            if (round < min) min = round
+            this.add_matches(
+                round, match_counts[round] - this.match_count_in_round(round)
+            )
+        }
+        this.store.update('challo_group', this.group.id, [['max_round', max], ['min_round', min]])
+    }
+
+    update_round(from, to) {
+        var diff = to - from
+
+        this.group_matches().forEach((row) => {
+            row.round += diff
+        })
+    }
+
+    get_total_round() {
+        var matches = this.group_matches().sort((a, b) => a.round - b.round)
+        return matches.length > 0 ? matches[0].round : 0
+    }
+
+    match_numbers_by_total_rounds(total_rounds) {
+        var match_count = {}
+        for (let win = 0; win < total_rounds; win++) {
+            match_count[total_rounds - win] = Math.pow(2, win)
+        }
+        return match_count
     }
 }

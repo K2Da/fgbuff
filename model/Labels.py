@@ -24,7 +24,8 @@ label_setting = [
     Label('LCQ',      'LCQ',     'Last Chance Qualifier'),
 
     Label('ESL',      'ESL',     'ESL'),
-    Label('RB',       'RedBull', 'RedBull')
+    Label('RB',       'RedBull', 'RedBull'),
+    Label('DRK',      'Darake!', 'Darake!'),
 ]
 
 label_links = [

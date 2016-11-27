@@ -2,13 +2,15 @@
     <div style="padding: 1em;">
         <button type="button" class="btn btn-primary" onclick={ onClickPush }>push</button>
         <button type="button" class="btn btn-primary" onclick={ onClickAddParticipant }>add participant</button>
+        <button type="button" class="btn btn-primary" onclick={ onClickAddGroup }>add group</button>
 
         <div style="width: 600px">
             <players app={ this } store={ this.store }></players>
         </div>
 
         <div each={ self.store.groups() }>
-            <group store={ parent.store } group_id={ id }></group>
+            <de store={ parent.store } group_id={ id } if={ ttype == 'DE' }></de>
+            <se store={ parent.store } group_id={ id } if={ ttype == 'SE' }></se>
         </div>
         <participants-li store={ self.store }></participants-li>
     </div>
@@ -33,4 +35,5 @@
 
     onClickPush(e) { self.store.push_store_to_server() }
     onClickAddParticipant(e) { self.store.add_participant(1) }
+    onClickAddGroup(e) { self.store.add_group() }
 </app>
