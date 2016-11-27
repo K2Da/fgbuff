@@ -1,6 +1,7 @@
 <participant-input>
     <input
-        class    ='awesomplete form-control'
+        class    = 'awesomplete form-control'
+        ref      = 'player_name'
         type     = 'text'
         value    = { this.name }
         onchange = { this.onParticipantChange }
@@ -13,7 +14,8 @@
     this.side           = opts.side
     this.awesomplete    = null
 
-    this.on('mount', () => { })
+    let participant = self.store.participant_by_id(self.match[self.side])
+    self.name = participant ? participant.name : ''
 
     onParticipantChange(e) {
         let participant = this.store.participant_by_name(e.srcElement.value)
@@ -22,17 +24,10 @@
         }
     }
 
-    this.on('update', () => {
-        let participant = self.store.participant_by_id(self.match[self.side])
-        self.name = participant ? participant.name : ''
-    })
-
-    this.on('updated', () => {
-        if (self.awesomplete == null) {
-            var input = self.root.firstElementChild
-            self.awesomplete = new Awesomplete(input, { list: '#participants_li', minChars: 1, autoFirst: true })
-            input.addEventListener('awesomplete-selectcomplete', self.onParticipantChange)
-        }
+    this.on('mount', () => {
+        var input = self.refs.player_name
+        self.awesomplete = new Awesomplete(input, { list: self.store.participant_names(), minChars: 1, autoFirst: true })
+        input.addEventListener('awesomplete-selectcomplete', self.onParticipantChange)
     })
 </participant-input>
 

@@ -23,6 +23,10 @@ class Store {
             .end((err, res) => { alert(res.text) })
     }
 
+    participant_names() {
+        return this.pool.challo_participant.map((p) => p.name)
+    }
+
     last_at_losers(id) {
         this.pool.challo_match.sort((a, b) => a.round - b.round)
         let last_match = this.pool.challo_match.find(
@@ -67,6 +71,8 @@ class Store {
 
     participants() {
         let ret = []
+        if (! this.pool) return []
+
         this.pool.challo_participant.forEach((row) => {
             ret.push(row)
         })
@@ -91,6 +97,8 @@ class Store {
 
     players() {
         let ret = []
+        if (! this.pool) return []
+
         this.pool.fg_player.forEach((row) => { ret.push(row) })
         return ret.sort((a, b) => a.url > b.url ? -1 : 1 )
     }
@@ -166,6 +174,7 @@ class Store {
     }
 
     groups() {
+        if (! this.pool) return []
         return this.pool.challo_group.sort((a, b) => a.id - b.id)
     }
 

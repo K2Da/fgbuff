@@ -5,7 +5,7 @@
             data-content={ this.comment_list } title="comments">
                 { this.store.count }
         </button>
-        <input name="input_comment" class="form-control" type="text" placeholder="Comment">
+        <input ref="input_comment" class="form-control" type="text" placeholder="Comment">
         <button class="btn btn-outline-success" onclick={ this.write }>push</button>
     </form>
 
@@ -26,8 +26,8 @@
     })
 
     write(e) {
-        this.store.write(this.input_comment.value)
-        this.input_comment.value = ''
+        this.store.write(this.refs.input_comment.value)
+        this.refs.input_comment.value = ''
         this.wrote = true
         $('[data-toggle="popover"]').popover('hide')
     }

@@ -11,7 +11,7 @@
             <td>
                 <participant-input
                     side           = 'player1_id'
-                    store          = { parent.store }
+                    store          = { this.store }
                     participant_id = { player1_id }
                     match          = { this }
                 />
@@ -28,7 +28,7 @@
             <td>
                 <participant-input
                     side           = 'player2_id'
-                    store          = { parent.store }
+                    store          = { this.store }
                     participant_id = { player2_id }
                     match          = { this }
                 />
