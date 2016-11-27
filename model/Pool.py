@@ -334,6 +334,18 @@ class Group(Row):
     def name(self):
         return self.get('name', '')
 
+    @property
+    def ttype(self):
+        return self.get('ttype', '')
+
+    @property
+    def tournament_type(self):
+        if self.ttype == 'DE':
+            return 'Double Elimination'
+        if self.ttype == 'SE':
+            return 'Single Elimination'
+        return ''
+
 
 class Vs:
     def __init__(self, pool, player_id, opponent_id, win, lose):
@@ -426,6 +438,13 @@ class Match(Row):
 
     @property
     def round_name(self):
+        if self.group.ttype == 'DE':
+            return self.round_name_de
+        if self.group.ttype == 'SE':
+            return self.round_name_se
+
+    @property
+    def round_name_de(self):
         max_r = self.group.max_round
         min_r = self.group.min_round
         r = self.round
@@ -443,6 +462,17 @@ class Match(Row):
             return "Winners Final"
         else:
             return "Winners {0}".format(abs(r))
+
+    @property
+    def round_name_se(self):
+        max_r = self.group.max_round
+        r = self.round
+        if r == max_r:
+            return "Final"
+        elif r == max_r - 1:
+            return "Semi Final"
+        else:
+            return "Winners {0}".format(r)
 
     @property
     def tournament_id(self):

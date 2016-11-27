@@ -179,9 +179,10 @@ class Store {
             id            : this.max_id('challo_group') + 1,
             min_round     : null,
             max_round     : null,
-            name          : null,
-            ttype         : null,
+            name          : 'Main Tournament',
+            ttype         : 'DE',
         })
+        console.log(this.pool.challo_group)
     }
 
     refresh() {
@@ -236,18 +237,6 @@ class PoolEditor {
         return arr.length
     }
 
-    add_groups(count) {
-        for (let i = 0; i < count; i++) {
-            this.pool.challo_group.push({
-                tournament_id : this.tournament.id,
-                id            : this.max_id('challo_group') + 1,
-                min_round     : 0,
-                max_round     : 0,
-                name          : 'Main Tournament',
-            })
-        }
-    }
-
     add_matches(round, count) {
         for (let i = 0; i < count; i++) {
             this.pool.challo_match.push({
@@ -285,9 +274,6 @@ class DoubleElimination extends PoolEditor {
     constructor(store, group_id) {
         super(store, group_id)
         this.current_total_round = this.get_total_round()
-        if (this.pool.challo_group.length == 0) {
-            this.add_groups(group_id)
-        }
     }
 
     add_round(move) {
@@ -363,9 +349,6 @@ class SingleElimination extends PoolEditor {
     constructor(store, group_id) {
         super(store, group_id)
         this.current_total_round = this.get_total_round()
-        if (this.pool.challo_group.length == 0) {
-            this.add_groups(group_id)
-        }
     }
 
     add_round(move) {

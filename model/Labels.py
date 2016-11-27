@@ -42,6 +42,7 @@ label_links = [
     ('Other', [
         ('ESL', []),
         ('RB',  []),
+        ('DRK', [])
     ])
 ]
 

@@ -38,7 +38,8 @@
         % if group is None or group != m.group:
             <thead>
                 <tr>
-                    <th colspan="5">{{m.group.name}}</th>
+                    <td colspan="3"><strong>{{m.group.name}}</strong></td>
+                    <td colspan="2">{{m.group.tournament_type}}</td>
                 </tr>
             </thead>
             <tbody>
