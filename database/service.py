@@ -78,9 +78,13 @@ def select_for_vs_table(standing_url, labels):
 
 def select_for_tournaments(labels):
     label_list, tournaments = CustomQueries.select_tournamets_with_labels(labels)
+    participants = Table('challo_participant').select('final_rank = %s', (1,))
+    players = Table('fg_player').select_in('id', [p['player_id'] for p in participants])
     return {
         'base_url': 'tournaments',
         'fg_tournament': tournaments,
+        'challo_participant': participants,
+        'fg_player': players,
         'labels': label_list,
     }
 

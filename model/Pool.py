@@ -186,6 +186,16 @@ class Touranament(Row, CountryMixin):
         'smash': 'smash.gg'
     }
 
+    def player_at_rank(self, rank: int) -> list:
+        rankers = [
+            p for p in self._pool.participants.values()
+            if p.tournament_id == self.id and p.final_rank == rank
+        ]
+        if rankers:
+            return [p.player for p in rankers]
+        else:
+            return []
+
     @property
     def name(self):
         return self.get('name', '-')
