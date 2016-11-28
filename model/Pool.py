@@ -39,10 +39,10 @@ class Pool:
         self._vs = None
         self._wl_counted = False
 
-    def link_with_tags(self, text: str, tags: list) -> str:
+    def link_with_tags(self, text: str, tags: list, active: bool) -> str:
         return '<a href="{0}">{1}</a>'.format(
             self.href_with_tags(tags), text
-        )
+        ) if not active else '<strong>{0}</strong>'.format(text)
 
     def href_with_tags(self, tags: list) -> str:
         if not tags:
@@ -52,8 +52,8 @@ class Pool:
         )
 
     def labels_included(self, labels: list, index: int) -> bool:
-        if len(self.labels) == 0 and index == 0:
-            return True
+        if len(self.labels) == 0:
+            return index == 0
 
         if len(self.labels) < len(labels):
             return False

@@ -1,9 +1,9 @@
-from model.Label import Label, CountryLabel, MenuLabel
+from model.Label import Label, CountryLabel, MenuLabel, ULMenuLabel
 import model.Countries
 
 label_setting = [
     MenuLabel('Ver',      'Ver.',    'Versions'),
-    MenuLabel('Other',    'Other',   'Others'),
+    ULMenuLabel('Other',    'Other',   'Others'),
 
     Label('SFV',      'SFV',     'Street Fighter V'),
     Label('SFIV',     'SFIV',    'Street Fighter IV'),
@@ -27,6 +27,7 @@ label_setting = [
     Label('RB',       'RedBull', 'RedBull'),
     Label('DRK',      'Darake!', 'Darake!'),
     Label('IISPO',    'Iispo!',  'Iispo!'),
+    Label('RAGE',     'RAGE',    'RAGE'),
 ]
 
 label_links = [
@@ -45,6 +46,7 @@ label_links = [
         ('RB',    []),
         ('DRK',   []),
         ('IISPO', []),
+        ('RAGE',  []),
     ])
 ]
 

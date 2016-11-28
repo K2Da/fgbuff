@@ -20,6 +20,10 @@ class Label:
     def is_link(self):
         return True
 
+    @property
+    def is_ul(self):
+        return False
+
 
 class CountryLabel(Label):
     @property
@@ -44,3 +48,8 @@ class MenuLabel(Label):
     def is_link(self):
         return False
 
+
+class ULMenuLabel(MenuLabel):
+    @property
+    def is_ul(self):
+        return True

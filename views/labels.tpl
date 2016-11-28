@@ -27,28 +27,42 @@
         <div class="card-block">
             <div class="tab-content">
                 % for i, (tab, heads) in enumerate(links):
-                    % current = [tab]
-                    % active = pool.labels_included(current, i)
-                    <div class="tab-pane{{ ' active' if active else '' }}" id="{{ tab.key }}" role="tabpanel">
+                    % current  = [tab]
+                    % included = pool.labels_included(current, i)
+                    % same     = pool.labels_same(current)
+                    <div class="tab-pane{{ ' active' if included else '' }}" id="{{ tab.key }}" role="tabpanel">
                         <h5>{{ tab.text }}</h5>
                         % if tab.is_link:
                             <p style="margin-left: 2em;"><small>
-                                {{! pool.link_with_tags('All', current) }}
+                                {{! pool.link_with_tags('All', current, same) }}
                             </small></p>
                         % end
 
-                        % for (head, v) in heads:
-                            <h6>{{ head.text }}</h6>
-                            <p style="margin-left: 2em;"><small>
+                        % if tab.is_ul:
+                            <ul>
+                                % active = pool.labels_same(current)
+                                % for (head, v) in heads:
+                                    % current = [tab, head]
+                                    % active = pool.labels_same(current)
+                                    <li>
+                                        {{! pool.link_with_tags(head.text, current, active) }}
+                                    </li>
+                                % end
+                            </ul>
+                        % else:
+                            % for (head, v) in heads:
                                 % current = [tab, head]
                                 % active = pool.labels_same(current)
-                                {{! pool.link_with_tags('All', current) if not active else '<strong>All</strong>' }}
-                                % for j, link in enumerate(v):
-                                    % current = [tab, head, link]
-                                    % active = pool.labels_same(current)
-                                    , {{! pool.link_with_tags(link.text, current) if not active else '<strong>{0}</strong>'.format(link.text) }}
+                                <h6>{{ head.text }}</h6>
+                                <p style="margin-left: 2em;"><small>
+                                    {{! pool.link_with_tags('All', current, active) }}
+                                    % for j, link in enumerate(v):
+                                        % current = [tab, head, link]
+                                        % active = pool.labels_same(current)
+                                        , {{! pool.link_with_tags(link.text, current, active) }}
                                     % end
-                            </small></p>
+                                </small></p>
+                            % end
                         % end
                     </div>
                 % end
