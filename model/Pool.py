@@ -591,6 +591,14 @@ class Player(Row, CountryMixin):
         ret = re.search('([^a-z]|^){0}([^a-z]|$)'.format(self.unique.lower()), name.lower())
         return ret is not None
 
+    @property
+    def name_for_2bytes(self):
+        uppers = [u for u in self.name if u.isupper()]
+        if len(uppers) >= 2:
+            return ''.join(uppers[:2])
+        else:
+            return self.name[:2]
+
 
 class Standing(Row):
     @property

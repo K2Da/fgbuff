@@ -6,16 +6,20 @@
     % include('labels.tpl')
     % tt = 0
     <table class="table-bordered table-hover" style="margin-top: 20px; width: {{len(pool.players)*36 + 342}}px; text-align: center;">
+        % players = sorted(pool.players.values(), key=lambda p: urls.index(p.url))
         <tr>
-            % players = sorted(pool.players.values(), key=lambda p: urls.index(p.url))
-            <td> </td>
-            <td> </td>
+            <td></td><td></td>
             % for i, p in enumerate(players):
                 <td style="width: 2em;">{{i + 1}}</td>
             % end
-            <td>w / l / d</td>
-            <td>T</td>
-            <td>rate</td>
+            <td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td>
+            % for i, p in enumerate(players):
+                <td style="width: 2em;">{{p.name_for_2bytes}}</td>
+            % end
+            <td>w / l / d</td><td>T</td><td>rate</td>
         </tr>
         % for i, p1 in enumerate(players):
             <tr>
