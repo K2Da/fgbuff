@@ -10,7 +10,8 @@ class Store {
                 self.pool.challo_group.forEach((row) => {
                     let editors = {
                         'DE': DoubleElimination,
-                        'SE': SingleElimination
+                        'SE': SingleElimination,
+                        'FS': FreeStyle
                     }
                     self.pool_editors[row.id] = new editors[row['ttype']](self, row.id)
                 })
@@ -177,8 +178,8 @@ class Store {
         this.pool.challo_group.push({
             tournament_id : this.tournament.id,
             id            : this.max_id('challo_group') + 1,
-            min_round     : null,
-            max_round     : null,
+            min_round     : 0,
+            max_round     : 0,
             name          : 'Main Tournament',
             ttype         : 'DE',
         })
@@ -392,4 +393,12 @@ class SingleElimination extends PoolEditor {
         }
         return match_count
     }
+}
+
+class FreeStyle extends PoolEditor {
+    constructor(store, group_id) {
+        super(store, group_id)
+    }
+
+    add_match() { this.add_matches(1, 1) }
 }

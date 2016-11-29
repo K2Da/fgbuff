@@ -11,6 +11,7 @@
         <div each={ self.store.groups() }>
             <de store={ parent.store } group_id={ id } if={ ttype == 'DE' }></de>
             <se store={ parent.store } group_id={ id } if={ ttype == 'SE' }></se>
+            <fs store={ parent.store } group_id={ id } if={ ttype == 'FS' }></fs>
         </div>
         <participants-li store={ self.store }></participants-li>
     </div>

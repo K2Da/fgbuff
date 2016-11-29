@@ -28,6 +28,7 @@ label_setting = [
     Label('DRK',      'Darake!', 'Darake!'),
     Label('IISPO',    'Iispo!',  'Iispo!'),
     Label('RAGE',     'RAGE',    'RAGE'),
+    Label('Crash',    'Crash',   'Crash'),
 ]
 
 label_links = [
@@ -42,11 +43,12 @@ label_links = [
     ]),
 
     ('Other', [
-        ('ESL',   []),
-        ('RB',    []),
-        ('DRK',   []),
-        ('IISPO', []),
-        ('RAGE',  []),
+        ('ESL',    []),
+        ('RB',     []),
+        ('DRK',    []),
+        ('IISPO',  []),
+        ('RAGE',   []),
+        ('Crash',  []),
     ])
 ]
 

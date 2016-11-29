@@ -26,6 +26,7 @@
             % include('tags/bracket.tpl')
             % include('tags/de.tpl')
             % include('tags/se.tpl')
+            % include('tags/fs.tpl')
             % include('tags/app.tpl')
             % include('tags/participants_li.tpl')
             % include('tags/participant_input.tpl')
