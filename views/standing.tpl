@@ -13,14 +13,14 @@
             % for i, p in enumerate(players):
                 <td style="width: 2em;">{{i + 1}}</td>
             % end
-            {{! '<td></td>' if long else ''}}<td></td><td></td><td></td>
+            {{! '<td></td>' if long else ''}}<td colspan="3">r = w+0.5d / w+l+d</td>
         </tr>
         <tr>
             <td></td><td></td>
             % for i, p in enumerate(players):
                 <td style="width: 2em;">{{p.name_for_2bytes}}</td>
             % end
-            {{! '<td></td>' if long else ''}}<td>w / l / d</td><td>T</td><td>rate</td>
+            {{! '<td></td>' if long else ''}}<td>w / l / d</td><td>T</td><td>r</td>
         </tr>
         % for i, p1 in enumerate(players):
             <tr>
@@ -51,7 +51,7 @@
                 % tt += w + l + d
                 <td>{{w+l+d}}</td>
                 % if w + l + d != 0:
-                    <td>{{round(w/(w + l + d) * 100)}}%</td>
+                    <td>{{round((w + 0.5 * d)/(w + l + d) * 100)}}%</td>
                 % else:
                     <td>-</td>
                 % end

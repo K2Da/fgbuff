@@ -29,6 +29,8 @@ label_setting = [
     Label('IISPO',    'Iispo!',  'Iispo!'),
     Label('RAGE',     'RAGE',    'RAGE'),
     Label('Crash',    'Crash',   'Crash'),
+    Label('KTL',      'Kakutop', 'Kakutop League'),
+    Label('DTV',      'Douyu',   'Douyu TV'),
 ]
 
 label_links = [
@@ -49,6 +51,8 @@ label_links = [
         ('IISPO',  []),
         ('RAGE',   []),
         ('Crash',  []),
+        ('KTL',    []),
+        ('DTV',    []),
     ])
 ]
 
