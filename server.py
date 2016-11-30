@@ -57,7 +57,7 @@ def standing(standing_url, labels=None):
 @app.route('/vstable')
 @cache
 def vstable():
-    s, pool = Pool.init_for_standing('cpt-finals-2016')
+    s, pool = Pool.init_for_standing('cpt-finals-2016', None)
     return template('standing', pool=pool, standing=s)
 
 
