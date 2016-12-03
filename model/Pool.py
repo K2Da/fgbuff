@@ -394,7 +394,11 @@ class Vs:
 class Match(Row):
     @property
     def scores_csv(self):
-        return self._row['scores_csv']
+        return self.get('scores_csv', '')
+
+    @property
+    def reverse_scores(self):
+        return self.scores_csv[::-1] if len(self.scores_csv) > 0 else ''
 
     @property
     def player1(self):

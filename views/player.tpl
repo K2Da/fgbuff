@@ -70,7 +70,7 @@
                 left, center, right = (
                     m.player1, m.scores_csv, m.player2
                 ) if m.player1.player.id == player.id else (
-                    m.player2, m.scores_csv[::-1], m.player1
+                    m.player2, m.reverse_scores, m.player1
                 )
             %>
             <td class="text-xs-center">{{m.round_name}}</td>
