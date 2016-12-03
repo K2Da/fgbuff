@@ -6,6 +6,7 @@ from database import service
 from typing import Dict, List, Any
 from operator import attrgetter
 from functools import reduce
+import collections
 
 
 class Pool:
@@ -31,7 +32,7 @@ class Pool:
 
         # dic
         self.player_to_participant = {
-            (r['tournament_id'], r['player_id']): r['id'] for r in data['challo_participant']
+            (r['tournament_id'], r['player_id']): (r['tournament_id'], r['id']) for r in data['challo_participant']
         } if 'challo_participant' in data else {}
         self.challo_tournament_to_fg = {
             t['challo_id']: t['id'] for t in data['fg_tournament']
@@ -557,6 +558,18 @@ class Player(Row, CountryMixin):
     @property
     def participant_ids(self):
         return [pid for tf, pid in self._pool.player_to_participant.items() if tf[1] == self.id]
+
+    @property
+    def participants(self):
+        return [
+            self._pool.participants[t_participant]
+            for t_player, t_participant
+            in self._pool.player_to_participant.items() if t_player[1] == self.id
+        ]
+
+    def get_rank_dic(self):
+        c = collections.Counter([p.final_rank for p in self.participants])
+        return c
 
     def maybe(self, name: str):
         def normalize(txt):

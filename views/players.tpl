@@ -11,11 +11,15 @@
     % if count == 0:
         % break
     % else:
+    % ranks = p.get_rank_dic()
     <tr>
         <td class="text-xs-right">{{!p.flag_span}}</td>
         <td><a href="/player/{{p.url}}">{{p.name}}</a></td>
-        <td class="text-xs-right">{{len(p.participant_ids)}}</td>
-        <td class="text-xs-center">{{p.win}} - {{p.lose}}</td>
+        <td class="text-xs-left">{{'🥇 x ' + str(ranks[1]) if ranks[1] else ''}}</td>
+        <td class="text-xs-left">{{'🥈 x ' + str(ranks[2]) if ranks[2] else ''}}</td>
+        <td class="text-xs-left">{{'🥉 x ' + str(ranks[3]) if ranks[3] else ''}}</td>
+        <td class="text-xs-right">in {{count}} tournaments</td>
+        <td class="text-xs-center">{{p.win}} win - {{p.lose}} lose</td>
     </tr>
     % end
 % end
