@@ -22,6 +22,7 @@ label_setting = [
     Label('Evo',      'Evo',     'Evolution'),
     Label('RF',       'RF',      'Regional Finals'),
     Label('LCQ',      'LCQ',     'Last Chance Qualifier'),
+    Label('CC',       'CC',      'Capcom Cup'),
 
     Label('ESL',      'ESL',     'ESL'),
     Label('RB',       'RedBull', 'RedBull'),
@@ -40,7 +41,7 @@ label_links = [
 
     ('CPT', [
         ('2016', [
-            'NA', 'LA', 'AO', 'EU', 'Ranking', 'Premier', 'Evo', 'RF', 'LCQ'
+            'NA', 'LA', 'AO', 'EU', 'Ranking', 'Premier', 'Evo', 'RF', 'LCQ', 'CC'
         ])
     ]),
 

@@ -53,7 +53,7 @@
 
     onRankChange(e) {
         parent.store.update(
-            'challo_participant', e.item.participant.id, [['final_rank', e.srcElement.value]]
+            'challo_participant', e.item.participant.id, [['final_rank', e.srcElement.value == 0 ? null : e.srcElement.value]]
         )
     }
 
