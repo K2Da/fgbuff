@@ -40,6 +40,7 @@
                                 Standing
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="/standing/cpt-finals-2016-top8">CPT Finals Top 8</a>
                                 <a class="dropdown-item" href="/standing/cpt-finals-2016">CPT Finals</a>
                                 <a class="dropdown-item" href="/standing/cpt-asia-finals-2016">CPT Asia Finals</a>
                             </div>
