@@ -505,6 +505,7 @@ class Player(Row, CountryMixin):
         self.re = None
         self._win = None
         self._lose = None
+        self._rank_dic = None
         super(Player, self).__init__(pool, challo_row)
 
     def add_win(self):
@@ -567,9 +568,20 @@ class Player(Row, CountryMixin):
             in self._pool.player_to_participant.items() if t_player[1] == self.id
         ]
 
-    def get_rank_dic(self):
-        c = collections.Counter([p.final_rank for p in self.participants])
-        return c
+    @property
+    def rank_dic(self):
+        if not self._rank_dic:
+            self._rank_dic = collections.Counter([p.final_rank for p in self.participants])
+
+        return self._rank_dic
+
+    @property
+    def rank_sort(self):
+        dic = self.rank_dic
+        one = 1000000 * dic[1] if dic[1] else 0
+        two = 10000 * dic[2] if dic[2] else 0
+        three = 100 * dic[3] if dic[3] else 0
+        return -(one + two + three) + self.sort_key
 
     def maybe(self, name: str):
         def normalize(txt):

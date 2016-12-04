@@ -6,12 +6,12 @@
 % include('labels.tpl')
 
 <table class="table">
-% for p in sorted(pool.players.values(), key=attrgetter('sort_key')):
+% for p in sorted(pool.players.values(), key=attrgetter('rank_sort')):
     % count = len(p.participant_ids)
     % if count == 0:
-        % break
+        % continue
     % else:
-    % ranks = p.get_rank_dic()
+    % ranks = p.rank_dic
     <tr>
         <td class="text-xs-right">{{!p.flag_span}}</td>
         <td><a href="/player/{{p.url}}">{{p.name}}</a></td>
