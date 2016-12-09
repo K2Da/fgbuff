@@ -61,6 +61,18 @@ def select_for_create_rel():
     }
 
 
+def select_for_ratings(labels):
+    label_list, tournaments = CustomQueries.select_tournamets_with_labels(labels)
+    return {
+        'base_url': 'ratings',
+        'fg_tournament': tournaments,
+        'fg_player': Table('fg_player').select_all(),
+        'challo_match': Table('challo_match').select_in('tournament_id', [t['id'] for t in tournaments]),
+        'challo_participant': Table('challo_participant').select_in('tournament_id', [t['id'] for t in tournaments]),
+        'labels': label_list,
+    }
+
+
 def select_for_vs_table(standing_url, labels):
     label_list, tournaments = CustomQueries.select_tournamets_with_labels(labels)
     standing = Table('fg_standing').select_one('url = %s', (standing_url,))

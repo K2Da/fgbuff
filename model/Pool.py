@@ -6,6 +6,7 @@ from database import service
 from typing import Dict, List, Any
 from operator import attrgetter
 from functools import reduce
+from util.glicko2 import Rate, WIN, LOSE
 import collections
 
 
@@ -39,6 +40,7 @@ class Pool:
         } if 'fg_tournament' in data else {}
         self._vs = None
         self._wl_counted = False
+        self._ratings = None
 
     def link_with_tags(self, text: str, tags: list, active: bool) -> str:
         return '<a href="{0}">{1}</a>'.format(
@@ -112,6 +114,34 @@ class Pool:
                 m.player1.player.add_lose()
         self._wl_counted = True
 
+    @property
+    def ratings(self):
+        if not self._ratings:
+            self.calc_rating()
+
+        return self._ratings
+
+    def calc_rating(self):
+        self._ratings = {player['id']: Rate() for player in self.fg_player}
+        history = {player['id']: [] for player in self.fg_player}
+
+        for t in sorted(self.tournaments.values(), key=attrgetter('end_at_desc'), reverse=True):
+            o = {index: rate.copy() for index, rate in self._ratings.items()}
+            m = {index: [] for index in self._ratings.keys()}
+
+            for match in t.matches:
+                fg1, fg2 = match.player1.player.id, match.player2.player.id
+
+                if fg1 != 0 and fg2 != 0:
+                    w1, w2 = match.p1_win_count, match.p2_win_count
+                    m[fg1].extend([(o[fg2], WIN) for _ in range(w1)] + [(o[fg2], LOSE) for _ in range(w2)])
+                    m[fg2].extend([(o[fg1], WIN) for _ in range(w2)] + [(o[fg1], LOSE) for _ in range(w1)])
+
+            for index, rate in self._ratings.items():
+                if m[index]:
+                    rate.add_match(m[index])
+                    history[index].append((t, rate.rating))
+
     @classmethod
     def init_for_tournament(cls, challo_url):
         tournament_id, pool = service.select_by_tournament_id(challo_url)
@@ -140,6 +170,10 @@ class Pool:
         return cls(service.select_for_create_rel())
 
     @classmethod
+    def init_for_ratings(cls, labels):
+        return cls(service.select_for_ratings(labels))
+
+    @classmethod
     def init_for_standing(cls, standing_url, labels):
         standing, pool = service.select_for_vs_table(standing_url, labels)
         return Standing(Pool({}), standing), cls(pool)
@@ -149,10 +183,7 @@ class Row:
     def __init__(self, pool: Pool, challo_row: Dict[str, Any]):
         self._pool = pool
         self._row = challo_row
-
-    @property
-    def id(self):
-        return self.get('id', 0)
+        self.id = self._row['id'] if self._row is not None and 'id' in self._row else 0
 
     def get(self, column, default):
         if self._row is not None and column in self._row and self._row[column] is not None:
@@ -247,6 +278,10 @@ class Touranament(Row, CountryMixin):
     def labels_text(self):
         labels = model.Labels.labels_from_string(self.get('labels', ''))
         return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.text, labels))
+
+    @property
+    def matches(self):
+        return [m for tm, m in self._pool.matches.items() if tm[0] == self.id]
 
 
 class Participant(Row):
@@ -498,6 +533,20 @@ class Match(Row):
     @property
     def p2_win(self):
         return self.get('winner_id', -1) == self.player2.id
+
+    @property
+    def p1_win_count(self):
+        i = int(self.scores_csv.split('-')[0])
+        if i > 5:
+            raise Exception(self.scores_csv)
+        return i
+
+    @property
+    def p2_win_count(self):
+        i = int(self.scores_csv.split('-')[1])
+        if i > 5:
+            raise Exception(self.scores_csv)
+        return i
 
 
 class Player(Row, CountryMixin):
