@@ -61,10 +61,18 @@ def select_for_create_rel():
     }
 
 
-def select_for_ratings(labels):
+def select_for_ratings(player_and_labels=None, labels=None):
+    if player_and_labels:
+        split = player_and_labels.split('/labels/') if player_and_labels is not None else ['']
+        players, labels = split[0], (split[1] if len(split) > 1 else None)
+        base_url = 'rate/' + players
+    else:
+        players = ''
+        base_url = 'ratings'
+
     label_list, tournaments = CustomQueries.select_tournamets_with_labels(labels)
-    return {
-        'base_url': 'ratings',
+    return players.split('/'), {
+        'base_url': base_url,
         'fg_tournament': tournaments,
         'fg_player': Table('fg_player').select_all(),
         'challo_match': Table('challo_match').select_in('tournament_id', [t['id'] for t in tournaments]),

@@ -11,6 +11,7 @@
         <script src='/static/js/lib/superagent.js'></script>
         <script src='/static/js/lib/riotcontrol.js'></script>
         <script src='/static/js/Comment.js'></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
         % if title :
             <title>Crouch Tech: {{title}}</title>
@@ -25,30 +26,8 @@
     <body>
         % include('analytics.tpl')
         <div class="container theme-showcase" role="main" style="margin-left: 0">
-            <nav class="navbar navbar-light">
-                <div class="collapse navbar-toggleable-xs" id="navbar-header">
-                    <a class="navbar-brand" href="/">Crouch Tech</a>
-                    <ul class="nav navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/tournaments">Tournaments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/players">Players</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Standing
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="/standing/cpt-finals-2016-top8">CPT Finals Top 8</a>
-                                <a class="dropdown-item" href="/standing/cpt-finals-2016">CPT Finals</a>
-                                <a class="dropdown-item" href="/standing/cpt-asia-finals-2016">CPT Asia Finals</a>
-                            </div>
-                        </li>
-                        <comment></comment>
-                    </ul>
-                </div>
-            </nav>
+            % include('nav.tpl')
+
             <div class="row" style="padding: 1rem 2rem">
                 {{!base}}
             </div>

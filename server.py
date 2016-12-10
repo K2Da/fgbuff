@@ -58,8 +58,15 @@ def standing(standing_url, labels=None):
 @app.route('/ratings/labels/<labels:path>')
 @cache
 def ratings(labels=None):
-    pool = Pool.init_for_ratings(labels)
+    _, pool = Pool.init_for_ratings(labels=labels)
     return template('ratings', pool=pool)
+
+
+@app.route('/rate/<player_and_labels:path>')
+@cache
+def rate(player_and_labels=None):
+    player_urls, pool = Pool.init_for_ratings(player_and_labels=player_and_labels)
+    return template('rate', pool=pool, player_urls=player_urls)
 
 
 @app.route('/vstable')

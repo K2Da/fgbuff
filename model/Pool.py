@@ -6,7 +6,7 @@ from database import service
 from typing import Dict, List, Any
 from operator import attrgetter
 from functools import reduce
-from util.glicko2 import Rate, WIN, LOSE
+from util.glicko2 import Rate, WIN, LOSE, RATE
 import collections
 
 
@@ -41,6 +41,8 @@ class Pool:
         self._vs = None
         self._wl_counted = False
         self._ratings = None
+        self._rating_log = None
+        self._rating_match_count = 0
 
     def link_with_tags(self, text: str, tags: list, active: bool) -> str:
         return '<a href="{0}">{1}</a>'.format(
@@ -121,9 +123,27 @@ class Pool:
 
         return self._ratings
 
+    def rating_log(self, player_url):
+        if not self._rating_log:
+            self.calc_rating()
+
+        for p in self.players.values():
+            if p.url == player_url:
+                return RatingLog(p, self._rating_log[p.id])
+
+        return None
+
+    @property
+    def rating_match_count(self):
+        if self._rating_match_count == 0:
+            self.calc_rating()
+
+        return self._rating_match_count
+
     def calc_rating(self):
         self._ratings = {player['id']: Rate() for player in self.fg_player}
-        history = {player['id']: [] for player in self.fg_player}
+        self._rating_log = {player['id']: [] for player in self.fg_player}
+        self._rating_match_count = 0
 
         for t in sorted(self.tournaments.values(), key=attrgetter('end_at_desc'), reverse=True):
             o = {index: rate.copy() for index, rate in self._ratings.items()}
@@ -133,6 +153,7 @@ class Pool:
                 fg1, fg2 = match.player1.player.id, match.player2.player.id
 
                 if fg1 != 0 and fg2 != 0:
+                    self._rating_match_count += 1
                     w1, w2 = match.p1_win_count, match.p2_win_count
                     m[fg1].extend([(o[fg2], WIN) for _ in range(w1)] + [(o[fg2], LOSE) for _ in range(w2)])
                     m[fg2].extend([(o[fg1], WIN) for _ in range(w2)] + [(o[fg1], LOSE) for _ in range(w1)])
@@ -140,7 +161,7 @@ class Pool:
             for index, rate in self._ratings.items():
                 if m[index]:
                     rate.add_match(m[index])
-                    history[index].append((t, rate.rating))
+                    self._rating_log[index].append((t, rate.copy()))
 
     @classmethod
     def init_for_tournament(cls, challo_url):
@@ -170,8 +191,9 @@ class Pool:
         return cls(service.select_for_create_rel())
 
     @classmethod
-    def init_for_ratings(cls, labels):
-        return cls(service.select_for_ratings(labels))
+    def init_for_ratings(cls, player_and_labels=None, labels=None):
+        player_urls, pool = service.select_for_ratings(player_and_labels=player_and_labels, labels=labels)
+        return player_urls, cls(pool)
 
     @classmethod
     def init_for_standing(cls, standing_url, labels):
@@ -282,6 +304,13 @@ class Touranament(Row, CountryMixin):
     @property
     def matches(self):
         return [m for tm, m in self._pool.matches.items() if tm[0] == self.id]
+
+    def participant_by_player(self, player_id):
+        for tp, participant in self._pool.participants.items():
+            if tp[0] == self.id and participant.player_id == player_id:
+                return participant
+
+        return None
 
 
 class Participant(Row):
@@ -690,3 +719,49 @@ class Standing(Row):
     @property
     def participants(self):
         return [s.strip() for s in self.get('participants', '').split(',')]
+
+
+class RatingLog:
+    def __init__(self, player, log):
+        self.player = player
+        self.log = log
+
+    @property
+    def tournaments(self):
+        return [l[0] for l in self.log]
+
+    def rate_at(self, start_dt, date):
+        last_rate, last_date = RATE, start_dt
+        for d in self.log:
+            if d[0].end_at >= date:
+                if d[0].end_at == date:
+                    return d[1].rating
+                else:
+                    return int(
+                        last_rate +
+                        ((d[1].rating - last_rate) / ((d[0].end_at - last_date).days + 1)) *
+                        (date - last_date).days
+                    )
+            else:
+                last_rate, last_date = d[1].rating, d[0].end_at
+
+        return last_rate
+
+    def tournament_at(self, date):
+        for d in self.log:
+            if d[0].end_at == date:
+                return d[0]
+        return None
+
+    def tournament_name_at(self, date):
+        t = self.tournament_at(date)
+        return t.name if t else ''
+
+    def rank_at(self, date):
+        t = self.tournament_at(date)
+        if t is None:
+            return ''
+
+        p = t.participant_by_player(self.player.id)
+        return '' if p is None else self.player.name + ' rank:' + str(p.final_rank)
+
