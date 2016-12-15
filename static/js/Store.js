@@ -1,6 +1,7 @@
 class Store {
     constructor() {
         riot.observable(this)
+        this.msg = 'none'
         var self = this
         window.superagent
             .get('/api/tournament/' + TOURNAMENT_URL)
@@ -25,11 +26,14 @@ class Store {
         window.superagent
             .post('/api/update')
             .send(self.pool)
-            .end((err, res) => { alert(res.text) })
+            .end((err, res) => {
+                self.msg = res.text
+                self.trigger('refresh', self)
+            })
     }
 
     participant_names() {
-        return this.pool.challo_participant.map((p) => p.name)
+        return this.pool.challo_participant.map((p) => p.name).filter((p) => p != null && p.length != 0)
     }
 
     last_at_losers(id) {
@@ -71,7 +75,7 @@ class Store {
     matches(group_id, round) {
         return this.pool.challo_match
             .filter((x, i, self) => x.group_id == group_id && x.round == round)
-            .sort((a, b) => b.id - a.id)
+            .sort((a, b) => a.id - b.id)
     }
 
     participants() {
@@ -227,8 +231,8 @@ class PoolEditor {
 
     remove_round() { }
 
-    delete_group(group_id) {
-        this.pool.challo_group = this.pool.challo_group.filter((x, i, self) => x['id'] != this.group_id)
+    delete_group() {
+        this.pool.challo_group = this.pool.challo_group.filter((x, i, self) => x['id']       != this.group_id)
         this.pool.challo_match = this.pool.challo_match.filter((x, i, self) => x['group_id'] != this.group_id)
     }
 

@@ -6,9 +6,14 @@ label_setting = [
     ULMenuLabel('Other',    'Other',   'Others'),
 
     Label('SFV',      'SFV',     'Street Fighter V'),
+    Label('SFV-S1',   'SFV-S1',  'Street Fighter V Season 1'),
+    Label('SFV-S2',   'SFV-S2',  'Street Fighter V Season 2'),
+
     Label('SFIV',     'SFIV',    'Street Fighter IV'),
+    Label('USFIV',    'USFIV',   'Ultra Street Fighter IV'),
 
     Label('2016',     '16',      '2016'),
+    Label('2015',     '15',      '2015'),
 
     Label('CPT',      'CPT',     'Capcom Pro Tour'),
 
@@ -24,6 +29,12 @@ label_setting = [
     Label('LCQ',      'LCQ',     'Last Chance Qualifier'),
     Label('CC',       'CC',      'Capcom Cup'),
 
+    Label('GP',       'GP',      'Global Premier'),
+    Label('CPT-NA',   'CPT-NA',  'CPT North America'),
+    Label('CPT-EU',   'CPT-EU',  'CPT Europe'),
+    Label('CPT-A',    'CPT-A',   'CPT Asia'),
+    Label('WC',       'WC',      'Wild Card'),
+
     Label('ESL',      'ESL',     'ESL'),
     Label('RB',       'RedBull', 'RedBull'),
     Label('DRK',      'Darake!', 'Darake!'),
@@ -36,12 +47,16 @@ label_setting = [
 
 label_links = [
     ('Ver', [
-        ('SFV',  []),
+        ('SFV',  ['SFV-S1', 'SFV-S2']),
+        ('SFIV', ['USFIV']),
     ]),
 
     ('CPT', [
         ('2016', [
             'NA', 'LA', 'AO', 'EU', 'Ranking', 'Premier', 'Evo', 'RF', 'LCQ', 'CC'
+        ]),
+        ('2015', [
+            'GP', 'CPT-NA', 'CPT-EU', 'CPT-A', 'WC', 'Evo', 'CC'
         ])
     ]),
 
@@ -69,6 +84,8 @@ def labels():
     label_dictionary = {s.key: s for s in label_setting}
 
     for c2, country in model.Countries.countries.items():
+        if c2 in label_dictionary:
+            raise Exception('duplicated label')
         label_dictionary[c2] = CountryLabel(c2, c2, country)
 
     return label_dictionary

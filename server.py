@@ -2,9 +2,10 @@ import config
 import json
 from util.server import cache, support_datetime_default
 from database import service
-from bottle import Bottle, run, template, request, response, debug, static_file
+from bottle import Bottle, run, template, request, response, debug, static_file, BaseRequest
 from model.Pool import Pool
 
+BaseRequest.MEMFILE_MAX = 1024 * 1024 * 128
 app = Bottle()
 debug(config.debug)
 

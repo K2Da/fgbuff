@@ -34,7 +34,7 @@
     <h5>Matches</h5>
     <table class="table">
     <% group = None %>
-    % for m in sorted(pool.matches.values(), key=attrgetter('tournament_id', 'group_id', 'sort_key', 'id_desc')):
+    % for m in sorted(pool.matches.values(), key=attrgetter('tournament_id', 'group_id', 'sort_key', 'id')):
         % if group is None or group != m.group:
             <thead>
                 <tr>

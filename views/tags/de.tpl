@@ -31,13 +31,16 @@
     this.store    = opts.store
     this.editor   = opts.store.pool_editor(opts.group_id)
     this.group_id = opts.group_id
+    console.log(self.group_id)
     this.group    = this.store.group(this.group_id)
 
     onClickAddRound(e) { self.store.pool_editor(self.group_id).add_round(true) }
     onClickStretchRound(e) { self.store.pool_editor(self.group_id).add_round(false) }
     onClickFillRounds(e) { self.store.pool_editor(self.group_id).fill_rounds() }
     onClickClearMatches(e) { self.store.pool_editor(self.group_id).clear_matches() }
-    onClickDeleteGroup(e) { self.store.delete_group(this.group_id) }
+    onClickDeleteGroup(e) {
+        this.store.pool_editor(this.group_id).delete_group()
+    }
 
     onNameChange(e) {
         this.store.update(

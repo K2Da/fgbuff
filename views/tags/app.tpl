@@ -1,5 +1,6 @@
 <app>
     <div style="padding: 1em;">
+        <p>{ self.store.msg }</p>
         <button type="button" class="btn btn-primary" onclick={ onClickPush }>push</button>
         <button type="button" class="btn btn-primary" onclick={ onClickAddParticipant }>add participant</button>
         <button type="button" class="btn btn-primary" onclick={ onClickAddGroup }>add group</button>

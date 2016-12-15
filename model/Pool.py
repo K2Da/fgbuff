@@ -565,6 +565,9 @@ class Match(Row):
 
     @property
     def p1_win_count(self):
+        if not self.scores_csv.split('-')[0].isdigit():
+            raise Exception(self.tournament.name)
+
         i = int(self.scores_csv.split('-')[0])
         if i > 5:
             raise Exception(self.scores_csv)
@@ -572,6 +575,9 @@ class Match(Row):
 
     @property
     def p2_win_count(self):
+        if not self.scores_csv.split('-')[1].isdigit():
+            raise Exception(self.tournament.name)
+
         i = int(self.scores_csv.split('-')[1])
         if i > 5:
             raise Exception(self.scores_csv)
