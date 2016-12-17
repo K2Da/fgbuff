@@ -26,7 +26,7 @@
     % end
     <tr>
         <td class="text-xs-right">{{!player.flag_span}}</td>
-        <td><a href="/rate/{{player.url}}">{{player.name}}</a></td>
+        <td>{{! player.a_to_rate}}</td>
         <td class="text-xs-right">{{'{:,}'.format(rate.rating)}}</td>
         <td class="text-xs-right">{{rate.rd}}</td>
         <td class="text-xs-center">{{'{:,}'.format(rate.range[0])}} - {{'{:,}'.format(rate.range[1])}}</td>

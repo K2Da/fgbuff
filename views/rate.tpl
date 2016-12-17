@@ -20,14 +20,14 @@
                     % if player.url in player_urls:
                         % if len(player_urls) > 1:
                             <a type="button" class="btn btn-danger" style="padding: 0px; width: 1.5em;"
-                               href="/rate/{{'/'.join([u for u in player_urls if u != player.url])}}"
+                               href="{{! pool.href_with_current_labels('rate/' + '/'.join([u for u in player_urls if u != player.url])) }}"
                             >-</a>
                         % else:
                             <a type="button" class="btn btn-danger" style="padding: 0px; width: 1.5em;">!</a>
                         % end
                     % else:
                         <a type="button" class="btn btn-primary" style="padding: 0px; width: 1.5em;"
-                           href="/rate/{{'/'.join(player_urls) + '/' + player.url}}"
+                           href="{{! pool.href_with_current_labels('rate/' + '/'.join(player_urls) + '/' + player.url) }}"
                         >+</a>
                     % end
                 </td>

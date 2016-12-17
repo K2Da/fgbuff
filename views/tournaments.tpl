@@ -8,7 +8,7 @@
 <table class="table">
 % for t in sorted(pool.tournaments.values(), key=attrgetter('end_at_desc')):
     <tr>
-        <td>{{!t.flag_span}} {{!t.link_or_name}}</td>
+        <td>{{!t.flag_span}} {{!t.a}}</td>
         <td>
             % winner = t.player_at_rank(1)
             % if len(winner) > 0:

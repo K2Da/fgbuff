@@ -51,7 +51,7 @@
         % if tournament is None or tournament != m.tournament:
             <% participant = m.player1 if m.player1.player.id == player.id else m.player2 %>
             <tr>
-                <th colspan="2" id="{{m.tournament.challo_url}}">{{! m.tournament.flag_span }} {{! m.tournament.link_or_name}}</th>
+                <th colspan="2" id="{{m.tournament.challo_url}}">{{! m.tournament.flag_span }} {{! m.tournament.a}}</th>
                 <td colspan="1" class="text-xs-right" nowrap>{{participant.rank_emoji}} {{participant.rank_text}}</td>
                 <td colspan="3" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>

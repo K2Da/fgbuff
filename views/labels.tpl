@@ -34,7 +34,7 @@
                         <h5>{{ tab.text }}</h5>
                         % if tab.is_link:
                             <p style="margin-left: 2em;"><small>
-                                {{! pool.link_with_tags('All', current, same) }}
+                                {{! pool.link_other_tags('All', current, same) }}
                             </small></p>
                         % end
 
@@ -45,7 +45,7 @@
                                     % current = [tab, head]
                                     % active = pool.labels_same(current)
                                     <li>
-                                        {{! pool.link_with_tags(head.text, current, active) }}
+                                        {{! pool.link_other_tags(head.text, current, active) }}
                                     </li>
                                 % end
                             </ul>
@@ -55,11 +55,11 @@
                                 % active = pool.labels_same(current)
                                 <h6>{{ head.text }}</h6>
                                 <p style="margin-left: 2em;"><small>
-                                    {{! pool.link_with_tags('All', current, active) }}
+                                    {{! pool.link_other_tags('All', current, active) }}
                                     % for j, link in enumerate(v):
                                         % current = [tab, head, link]
                                         % active = pool.labels_same(current)
-                                        , {{! pool.link_with_tags(link.text, current, active) }}
+                                        , {{! pool.link_other_tags(link.text, current, active) }}
                                     % end
                                 </small></p>
                             % end

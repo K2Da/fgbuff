@@ -14,7 +14,7 @@
     % ranks = p.rank_dic
     <tr>
         <td class="text-xs-right">{{!p.flag_span}}</td>
-        <td><a href="/player/{{p.url}}">{{p.name}}</a></td>
+        <td>{{! p.a}}</td>
         <td class="text-xs-left">{{'🥇 x ' + str(ranks[1]) if ranks[1] else ''}}</td>
         <td class="text-xs-left">{{'🥈 x ' + str(ranks[2]) if ranks[2] else ''}}</td>
         <td class="text-xs-left">{{'🥉 x ' + str(ranks[3]) if ranks[3] else ''}}</td>

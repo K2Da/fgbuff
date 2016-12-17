@@ -44,7 +44,7 @@ class Pool:
         self._rating_log = None
         self._rating_match_count = 0
 
-    def link_with_tags(self, text: str, tags: list, active: bool) -> str:
+    def link_other_tags(self, text: str, tags: list, active: bool) -> str:
         return '<a href="{0}">{1}</a>'.format(
             self.href_with_tags(tags), text
         ) if not active else '<strong>{0}</strong>'.format(text)
@@ -55,6 +55,21 @@ class Pool:
         return '/{0}/labels/{1}'.format(
             self.base_url, '/'.join([t.key for t in tags])
         )
+
+    def a(self, text, url):
+        return '<a href="/{0}">{1}</a>'.format(url, text)
+
+    def a_with_current_labels(self, text, url):
+        if not self.labels:
+            return '<a href="{0}">{1}</a>'.format(self.href_with_current_labels(url), text)
+        else:
+            return '<a href="{0}">{1}</a>'.format(self.href_with_current_labels(url), text)
+
+    def href_with_current_labels(self, url):
+        if not self.labels:
+            return '/{0}'.format(url)
+        else:
+            return '/{0}/labels/{1}'.format(url, '/'.join([t.key for t in self.labels]))
 
     def labels_included(self, labels: list, index: int) -> bool:
         if len(self.labels) == 0:
@@ -255,10 +270,10 @@ class Touranament(Row, CountryMixin):
         return self.get('name', '-')
 
     @property
-    def link_or_name(self):
+    def a(self):
         if self.challo_url is None:
             return self.name
-        return '<a href="/tournament/{0}">{1}</a>'.format(self.challo_url, self.name)
+        return self._pool.a(self.name, 'tournament/{0}'.format(self.challo_url))
 
     @property
     def challo_url(self):
@@ -606,6 +621,14 @@ class Player(Row, CountryMixin):
     @property
     def url(self):
         return self.get('url', '')
+
+    @property
+    def a(self):
+        return self._pool.a(self.name, 'player/{0}'.format(self.url))
+
+    @property
+    def a_to_rate(self):
+        return self._pool.a_with_current_labels(self.name, 'rate/{0}'.format(self.url))
 
     @property
     def name(self):
