@@ -36,7 +36,7 @@
         </tr>
     </table>
 
-    var self   = this
+    var self      = this
     this.store    = opts.store
     this.group_id = opts.group_id
     this.round    = opts.round

@@ -142,6 +142,36 @@ class Store {
             if (scores[0] < scores[1]) {
                 match.winner_id = match.player2_id
             }
+            this.next_round(match)
+        }
+    }
+
+    next_round(match) {
+        var winners = match.round > 0
+        var current_round_mathces = this.matches(match.group_id, match.round)
+        var index = current_round_mathces.indexOf(match)
+        var next_index = 0
+        var left_side = true
+        var next_round_matches = this.matches(match.group_id, match.round + (winners ? 1 : -1))
+
+        if (winners || current_round_mathces.length != next_round_matches.length) {
+            next_index = Math.floor(index / 2)
+            left_side = (index % 2) == 0
+        } else {
+            next_index = index
+            left_side = false
+        }
+
+        if (next_round_matches.length > next_index) {
+            var nm = next_round_matches[next_index]
+            if (left_side && nm.player1_id == null) {
+                nm.player1_id = match.winner_id
+                this.refresh()
+            }
+            if (! left_side && nm.player2_id == null) {
+                nm.player2_id = match.winner_id
+                this.refresh()
+            }
         }
     }
 
@@ -187,11 +217,10 @@ class Store {
             name          : 'Main Tournament',
             ttype         : 'DE',
         })
-        console.log(this.pool.challo_group)
     }
 
     refresh() {
-        this.trigger('refresh', self)
+        this.trigger('refresh', this)
     }
 
     groups() {

@@ -35,7 +35,7 @@
         self.update()
     })
 
-    onClickPush(e) { self.store.push_store_to_server() }
-    onClickAddParticipant(e) { self.store.add_participant(1) }
-    onClickAddGroup(e) { self.store.add_group() }
+    onClickPush(e) { this.store.push_store_to_server() }
+    onClickAddParticipant(e) { this.store.add_participant(1) }
+    onClickAddGroup(e) { this.store.add_group() }
 </app>

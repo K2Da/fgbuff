@@ -590,6 +590,7 @@ class Player(Row, CountryMixin):
         self._win = None
         self._lose = None
         self._rank_dic = None
+        self.name_matcher = None
         super(Player, self).__init__(pool, challo_row)
 
     def add_win(self):
@@ -615,8 +616,8 @@ class Player(Row, CountryMixin):
         return self.get('patterns', '')
 
     @property
-    def unique(self):
-        return self.get('unique', '')
+    def unique_str(self):
+        return self.get('unique_str', '')
 
     @property
     def link(self):
@@ -668,41 +669,10 @@ class Player(Row, CountryMixin):
         return -(one + two + three) + self.sort_key
 
     def maybe(self, name: str):
-        def normalize(txt):
-            return re.sub('[/\-*_ .\'　|丨│︱]', '', txt.lower())
+        if self.name_matcher is None:
+            self.name_matcher = NameMatcher(self)
 
-        def trim(txt):
-            return '(^|\]){0}(\(|$|／|\[|-)'.format(txt)
-
-        def separate_team_name(txt):
-            spl = normalize(txt).split('|')
-            if len(spl) != 2:
-                reg_name = trim(re.escape(normalize(txt).lower()))
-            else:
-                s1 = re.escape(spl[0])
-                s2 = re.escape(spl[1])
-                tn = trim('{0}[ \(\)\|\.]*{1}'.format(s1, s2))
-                nt = trim('{0}[ \(\)\|\.]*{1}'.format(s2, s1))
-                reg_name = '{0}|{1}'.format(tn, nt)
-            return reg_name
-
-        def join_reg(patterns):
-            return '|'.join([separate_team_name(p) for p in patterns])
-
-        if self.re is None:
-            additional = self.patterns.split('\\') if len(self.patterns) != 0 else []
-            self.re = re.compile(join_reg([self.url] + additional))
-
-        if self.re.search(normalize(name)) is not None:
-            return True
-
-        if len(self.unique) == 0:
-            return False
-
-        # uniqueチェック
-        # 削ったりせず、素で比べて連続した文字列じゃない状態で含まれてればOK
-        ret = re.search('([^a-z]|^){0}([^a-z]|$)'.format(self.unique.lower()), name.lower())
-        return ret is not None
+        return self.name_matcher.maybe(name)
 
     @property
     def name_for_2bytes(self):
@@ -711,6 +681,47 @@ class Player(Row, CountryMixin):
             return ''.join(uppers[:2])
         else:
             return self.name[:2]
+
+
+class NameMatcher:
+    def __init__(self, player: Player):
+        self.player = player
+        additional = self.player.patterns.split('\\') if len(self.player.patterns) != 0 else []
+        self.pattern_re = re.compile(self.join_reg([self.player.url] + additional))
+        self.unique_re = re.compile('([^a-z]|^){0}([^a-z]|$)'.format(self.player.unique_str.lower()))
+
+    def normalize(self, txt):
+        return re.sub('[/*_ .\'　|丨│︱]', '', txt.lower())
+
+    def trim(self, txt):
+        return '(^|\]){0}(\(|$|／|\[)'.format(txt)
+
+    def separate_team_name(self, txt):
+        spl = self.normalize(txt).split('|')
+        if len(spl) != 2:
+            reg_name = self.trim(re.escape(self.normalize(txt).lower()))
+        else:
+            s1 = re.escape(spl[0])
+            s2 = re.escape(spl[1])
+            tn = self.trim('{0}[ \(\)\|\.]*{1}'.format(s1, s2))
+            nt = self.trim('{0}[ \(\)\|\.]*{1}'.format(s2, s1))
+            reg_name = '{0}|{1}'.format(tn, nt)
+        return reg_name
+
+    def join_reg(self, patterns):
+        return '|'.join([self.separate_team_name(p) for p in patterns])
+
+    def maybe(self, name: str):
+        if self.pattern_re.search(self.normalize(name)) is not None:
+            return True
+
+        if len(self.player.unique_str) == 0:
+            return False
+
+        # uniqueチェック
+        # 削ったりせず、素で比べて連続した文字列じゃない状態で含まれてればOK
+        ret = self.unique_re.search(name.lower())
+        return ret is not None
 
 
 class Standing(Row):

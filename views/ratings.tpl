@@ -3,7 +3,7 @@
 % rebase('base.tpl', title='Ratings')
 <h4 class="display-4">Ratings</h4>
 <p>
-    Ratings with {{'{:,}'.format(pool.rating_match_count)}} match results.
+    Ratings based on Glicko2 system, with {{'{:,}'.format(pool.rating_match_count)}} match results.
     Unrated players' ratings {{'{:,}'.format(util.glicko2.RATE)}}, RD {{util.glicko2.RD}} and volatality is {{util.glicko2.VOLATALITY}}.
     Players having RD > {{util.glicko2.DISPLAY_RD}} are not displayed.
 </p>

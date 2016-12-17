@@ -31,7 +31,6 @@
     this.store    = opts.store
     this.editor   = opts.store.pool_editor(opts.group_id)
     this.group_id = opts.group_id
-    console.log(self.group_id)
     this.group    = this.store.group(this.group_id)
 
     onClickAddRound(e) { self.store.pool_editor(self.group_id).add_round(true) }

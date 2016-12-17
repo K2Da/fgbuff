@@ -24,6 +24,12 @@
         }
     }
 
+    RiotControl.on('refresh', (store) => {
+        let participant = self.store.participant_by_id(self.match[self.side])
+        self.name = participant ? participant.name : ''
+        self.update()
+    })
+
     this.on('mount', () => {
         var input = self.refs.player_name
         self.awesomplete = new Awesomplete(input, { list: self.store.participant_names(), minChars: 1, autoFirst: true })

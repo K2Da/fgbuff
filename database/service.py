@@ -57,6 +57,7 @@ def select_for_players(labels):
 def select_for_create_rel():
     return {
         'fg_player': Table('fg_player').select_all(),
+        'fg_tournament': Table('fg_tournament').select_all(),
         'challo_participant': Table('challo_participant').select_all()
     }
 
