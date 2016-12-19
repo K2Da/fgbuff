@@ -5,29 +5,32 @@ label_setting = [
     MenuLabel('Ver',      'Ver.',    'Versions'),
     ULMenuLabel('Other',    'Other',   'Others'),
 
-    Label('SFV',      'SFV',     'Street Fighter V'),
-    Label('SFV-S1',   'SFV-S1',  'Street Fighter V Season 1'),
-    Label('SFV-S2',   'SFV-S2',  'Street Fighter V Season 2'),
+    Label('SFV',       'SFV',       'Street Fighter V'),
+    Label('SFV-S1',    'SFV-S1',    'Street Fighter V Season 1'),
+    Label('SFV-S2',    'SFV-S2',    'Street Fighter V Season 2'),
 
-    Label('SFIV',     'SFIV',    'Street Fighter IV'),
-    Label('USFIV',    'USFIV',   'Ultra Street Fighter IV'),
+    Label('SFIV',      'SFIV',      'Street Fighter IV'),
+    Label('USFIV',     'USFIV',     'Ultra Street Fighter IV'),
+    Label('SSFIVAE12', 'SSFIVAE12', 'Super Street Fighter IV AE 2012'),
 
-    Label('2016',     '16',      '2016'),
-    Label('2015',     '15',      '2015'),
+    Label('2016',      '16',      '2016'),
+    Label('2015',      '15',      '2015'),
+    Label('2014',      '14',      '2014'),
 
-    Label('CPT',      'CPT',     'Capcom Pro Tour'),
+    Label('CPT',       'CPT',     'Capcom Pro Tour'),
 
-    Label('NA',       'NA',      'North America'),
-    Label('LA',       'LA',      'Latin America'),
-    Label('AO',       'AO',      'Asia/Oceania'),
-    Label('EU',       'EU',      'Europe'),
+    Label('NA',        'NA',      'North America'),
+    Label('LA',        'LA',      'Latin America'),
+    Label('AO',        'AO',      'Asia/Oceania'),
+    Label('EU',        'EU',      'Europe'),
 
-    Label('Ranking',  'Ranking', 'Ranking'),
-    Label('Premier',  'Premier', 'Premier'),
-    Label('Evo',      'Evo',     'Evolution'),
-    Label('RF',       'RF',      'Regional Finals'),
-    Label('LCQ',      'LCQ',     'Last Chance Qualifier'),
-    Label('CC',       'CC',      'Capcom Cup'),
+    Label('Ranking',   'Ranking', 'Ranking'),
+    Label('Premier',   'Premier', 'Premier'),
+    Label('Evo',       'Evo',     'Evolution'),
+    Label('ON',        'ONLINE',  'ONLINE'),
+    Label('RF',        'RF',      'Regional Finals'),
+    Label('LCQ',       'LCQ',     'Last Chance Qualifier'),
+    Label('CC',        'CC',      'Capcom Cup'),
 
     Label('GP',       'GP',      'Global Premier'),
     Label('CPT-NA',   'CPT-NA',  'CPT North America'),
@@ -57,6 +60,9 @@ label_links = [
         ]),
         ('2015', [
             'GP', 'CPT-NA', 'CPT-EU', 'CPT-A', 'WC', 'Evo', 'CC'
+        ]),
+        ('2014', [
+            'GP', 'CPT-NA', 'CPT-EU', 'CPT-A', 'WC', 'Evo', 'ON', 'CC'
         ])
     ]),
 
