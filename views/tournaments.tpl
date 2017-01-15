@@ -11,9 +11,12 @@
         <td>{{!t.flag_span}} {{!t.a}}</td>
         <td>
             % winner = t.player_at_rank(1)
-            % if len(winner) > 0:
-                % p = t.player_at_rank(1)[0]
+            % if len(winner) == 1:
+                % p = winner[0]
                 {{!p.flag_span}} {{!p.link}}
+            % end
+            % if len(winner) > 1:
+                {{len(winner)}} players
             % end
         </td>
         <td style="vertical-align: middle;"><small>{{!t.labels_short}}</small></td>

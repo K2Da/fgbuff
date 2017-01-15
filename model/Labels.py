@@ -13,6 +13,7 @@ label_setting = [
     Label('USFIV',     'USFIV',     'Ultra Street Fighter IV'),
     Label('SSFIVAE12', 'SSFIVAE12', 'Super Street Fighter IV AE 2012'),
 
+    Label('2017',      '17',      '2017'),
     Label('2016',      '16',      '2016'),
     Label('2015',      '15',      '2015'),
     Label('2014',      '14',      '2014'),
@@ -46,6 +47,7 @@ label_setting = [
     Label('Crash',    'Crash',   'Crash'),
     Label('KTL',      'Kakutop', 'Kakutop League'),
     Label('DTV',      'Douyu',   'Douyu TV'),
+    Label('ZE',       'ZE',      'ZE'),
 ]
 
 label_links = [
@@ -75,6 +77,7 @@ label_links = [
         ('Crash',  []),
         ('KTL',    []),
         ('DTV',    []),
+        ('ZE',     []),
     ])
 ]
 

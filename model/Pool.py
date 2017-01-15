@@ -304,7 +304,7 @@ class Touranament(Row, CountryMixin):
 
     @property
     def end_at_desc(self):
-        return -(self.end_at.year * 1000 + self.end_at.month * 100 + self.end_at.day)
+        return -(self.end_at.year * 12 * 32 + self.end_at.month * 32 + self.end_at.day)
 
     @property
     def labels_short(self):
@@ -584,7 +584,7 @@ class Match(Row):
             raise Exception(self.tournament.name)
 
         i = int(self.scores_csv.split('-')[0])
-        if i > 5:
+        if i > 10:
             raise Exception(self.scores_csv)
         return i
 
@@ -594,7 +594,7 @@ class Match(Row):
             raise Exception(self.tournament.name)
 
         i = int(self.scores_csv.split('-')[1])
-        if i > 5:
+        if i > 10:
             raise Exception(self.scores_csv)
         return i
 
