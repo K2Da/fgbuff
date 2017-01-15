@@ -526,6 +526,8 @@ class Match(Row):
             return self.round_name_de
         if self.group.ttype == 'SE':
             return self.round_name_se
+        else:
+            return ''
 
     @property
     def round_name_de(self):
