@@ -56,7 +56,10 @@ class SmashLoader:
             else:
                 name = 'Group {0}'.format(chr(i))
                 i += 1
-            self.cg.insert_with_array([group_id if group_id is not None else 0, self.tournament['id'], rounds[0], rounds[1], name])
+            self.cg.insert_with_array([
+                group_id if group_id is not None else 0,
+                self.tournament['id'], rounds[0], rounds[1], name, 'DE'
+            ])
 
         self.ft.update(self.tournament['id'], [('refresh', False)])
 

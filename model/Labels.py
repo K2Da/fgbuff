@@ -11,12 +11,14 @@ label_setting = [
 
     Label('SFIV',      'SFIV',      'Street Fighter IV'),
     Label('USFIV',     'USFIV',     'Ultra Street Fighter IV'),
-    Label('SSFIVAE12', 'SSFIVAE12', 'Super Street Fighter IV AE 2012'),
+    Label('SSFIV-12',  'SSFIV-12',  'Super Street Fighter IV AE 2012'),
 
     Label('2017',      '17',      '2017'),
     Label('2016',      '16',      '2016'),
     Label('2015',      '15',      '2015'),
     Label('2014',      '14',      '2014'),
+    Label('2013',      '13',      '2013'),
+    Label('2012',      '12',      '2012'),
 
     Label('CPT',       'CPT',     'Capcom Pro Tour'),
 
@@ -48,12 +50,13 @@ label_setting = [
     Label('KTL',      'Kakutop', 'Kakutop League'),
     Label('DTV',      'Douyu',   'Douyu TV'),
     Label('ZE',       'ZE',      'ZE'),
+    Label('TPG',      'TOPANGA', 'TOPANGA'),
 ]
 
 label_links = [
     ('Ver', [
         ('SFV',  ['SFV-S1', 'SFV-S2']),
-        ('SFIV', ['USFIV']),
+        ('SFIV', ['USFIV',  'SSFIV-12']),
     ]),
 
     ('CPT', [
@@ -69,6 +72,7 @@ label_links = [
     ]),
 
     ('Other', [
+        ('TPG',    []),
         ('ESL',    []),
         ('RB',     []),
         ('DRK',    []),
