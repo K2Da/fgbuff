@@ -22,6 +22,7 @@
         <script type="riot/tag">
             % include('tags/matches.tpl')
             % include('tags/player_input.tpl')
+            % include('tags/name_input.tpl')
             % include('tags/players.tpl')
             % include('tags/bracket.tpl')
             % include('tags/de.tpl')

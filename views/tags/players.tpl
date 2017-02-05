@@ -6,9 +6,10 @@
                 <a onclick={ this.onDelete }>del</a>
             </td>
             <td>
-                <input
-                    class    = 'form-control'
-                    value    = { participant.name }
+                <name-input
+                    store       = { self.store }
+                    url         = { self.store.player_url(participant.player_id)}
+                    participant = { participant }
                     onchange = { this.onNameChange }
                     style    = 'width: 10em; text-align: left;'
                 />
@@ -57,12 +58,6 @@
         )
     }
 
-    onNameChange(e) {
-        e.preventUpdate = false
-        parent.store.update(
-            'challo_participant', e.item.participant.id, [['name', e.srcElement.value.trim()]]
-        )
-    }
 
     onDelete(e) {
         parent.store.remove('challo_participant', e.item.participant.id)
