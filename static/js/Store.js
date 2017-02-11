@@ -136,10 +136,12 @@ class Store {
         if (match == null || match.scores_csv == null) return
         let scores = match.scores_csv.split('-')
         if (scores.length == 2) {
-            if (scores[0] > scores[1]) {
+            var p1 = Number(scores[0])
+            var p2 = Number(scores[1])
+            if (p1 > p2) {
                 match.winner_id = match.player1_id
             }
-            if (scores[0] < scores[1]) {
+            if (p1 < p2) {
                 match.winner_id = match.player2_id
             }
             this.next_round(match)

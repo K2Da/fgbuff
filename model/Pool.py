@@ -394,7 +394,7 @@ class Participant(Row):
             if m.player1 == self and m.p2_win or m.player2 == self and m.p1_win:
                 ret = '<span style="color: red">{0}</span>'.format('✖') + ret
                 l += 1
-        return '({0} / {1}) '.format(w, l) + ret
+        return 'W:{0} L:{1} T:{2} '.format(w, l, w + l), ret
 
     @property
     def end_at_desc(self):
@@ -586,7 +586,7 @@ class Match(Row):
             raise Exception(self.tournament.name)
 
         i = int(self.scores_csv.split('-')[0])
-        if i > 10:
+        if i > 20:
             raise Exception(self.scores_csv)
         return i
 
@@ -596,7 +596,7 @@ class Match(Row):
             raise Exception(self.tournament.name)
 
         i = int(self.scores_csv.split('-')[1])
-        if i > 10:
+        if i > 20:
             raise Exception(self.scores_csv)
         return i
 

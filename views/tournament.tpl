@@ -21,8 +21,11 @@
     % for p in sorted(pool.participants.values(), key=lambda p: p.rank_for_sort):
         <tr>
             <td>
-                {{!p.player.flag_span}} {{!p.link_or_text}}<br />
-                {{!p.wl}}
+                % wl = p.wl
+                {{!p.player.flag_span}} {{!p.link_or_text}} {{! wl[0]}}<br />
+                <div style="word-break: break-all; max-width: 220px;">
+                    {{! wl[1]}}
+                </div>
             </td>
             <td style="vertical-align: middle; font-size: 150%; text-align: center;">{{p.rank_text}}</td>
         </tr>
