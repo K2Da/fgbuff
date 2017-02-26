@@ -3,7 +3,9 @@
         <p>{ self.store.msg }</p>
         <button type="button" class="btn btn-primary" onclick={ onClickPush }>push</button>
         <button type="button" class="btn btn-primary" onclick={ onClickAddParticipant }>add participant</button>
-        <button type="button" class="btn btn-primary" onclick={ onClickAddGroup }>add group</button>
+        <button type="button" class="btn btn-primary" onclick={ onClickAddGroupTop }>add group top</button>
+        <button type="button" class="btn btn-primary" onclick={ onClickAddGroupBot }>add group bot</button>
+        <button type="button" class="btn btn-primary" onclick={ onClickDump }>dump</button>
 
         <div style="width: 600px">
             <players app={ this } store={ this.store }></players>
@@ -37,5 +39,7 @@
 
     onClickPush(e) { this.store.push_store_to_server() }
     onClickAddParticipant(e) { this.store.add_participant(1) }
-    onClickAddGroup(e) { this.store.add_group() }
+    onClickAddGroupTop(e) { this.store.add_group_top() }
+    onClickAddGroupBot(e) { this.store.add_group_bot() }
+    onClickDump(e) { console.log(store.pool) }
 </app>

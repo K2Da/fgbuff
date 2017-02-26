@@ -210,14 +210,31 @@ class Store {
         }
     }
 
-    add_group() {
+    add_group_bot() {
         this.pool.challo_group.push({
             tournament_id : this.tournament.id,
             id            : this.max_id('challo_group') + 1,
             min_round     : 0,
             max_round     : 0,
-            name          : 'Main Tournament',
-            ttype         : 'DE',
+            name          : '',
+            ttype         : 'FS',
+        })
+    }
+
+    add_group_top() {
+        this.pool.challo_group.forEach((row) => {
+            row.id++
+        })
+        this.pool.challo_match.forEach((row) => {
+            row.group_id++
+        })
+        this.pool.challo_group.push({
+            tournament_id : this.tournament.id,
+            id            : 0,
+            min_round     : 0,
+            max_round     : 0,
+            name          : '',
+            ttype         : 'FS',
         })
     }
 
