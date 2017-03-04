@@ -9,7 +9,12 @@
         <dt class="col-sm-2 text-xs-right">Date</dt>
         <dd class="col-sm-9">{{tournament.date_string}}</dd>
         <dt class="col-sm-2 text-xs-right">Labels</dt>
-        <dd class="col-sm-9">{{tournament.labels_text}}</dd>
+        <dd class="col-sm-9">
+            <span class="tag tag tag-primary">{{tournament.version.text}}</span>
+            % for p in tournament.props:
+                <span class="tag tag tag-info">{{p.text}}</span>
+            % end
+        </dd>
         <dt class="col-sm-2 text-xs-right">Bracket</dt>
         <dd class="col-sm-9">{{!tournament.tournament_link}}</dd>
     </dl>

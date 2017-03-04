@@ -307,14 +307,38 @@ class Touranament(Row, CountryMixin):
         return -(self.end_at.year * 12 * 32 + self.end_at.month * 32 + self.end_at.day)
 
     @property
+    def labels(self):
+        return model.Labels.labels_from_string(self.get('labels', ''))
+
+    @property
     def labels_short(self):
-        labels = model.Labels.labels_from_string(self.get('labels', ''))
-        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.short, labels))
+        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.short, self.labels))
 
     @property
     def labels_text(self):
-        labels = model.Labels.labels_from_string(self.get('labels', ''))
-        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.text, labels))
+        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.text, self.labels))
+
+    @property
+    def version(self):
+        return self.labels[0]
+
+    @property
+    def main_prop_short(self):
+        if len(self.labels) < 3:
+            return ''
+        else:
+            return self.labels[2].short
+
+    @property
+    def prop_text(self):
+        return reduce(lambda a, b: a + ', ' + b, map(lambda l: l.text, self.props))
+
+    @property
+    def props(self):
+        if len(self.labels) < 3:
+            return []
+        else:
+            return self.labels[2:]
 
     @property
     def matches(self):

@@ -31,16 +31,28 @@
 <div class="col-xs-12 col-lg-8">
     <h5>Tournaments</h5>
     <table class="table">
+    % pre_version = None
     % for p in sorted(pool.participants.values(), key=attrgetter('end_at_desc')):
         % if p.player_id != player_id:
             % continue
         % end
+        % version = p.tournament.version
+        % if pre_version != version:
         <tr>
-            <td class="text-xs-left">{{!p.tournament.flag_span}} <a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a><td>
-            <td class="text-xs-right">{{p.rank_emoji}}</td>
+            <td colspan="4" class="h6">{{version.text}}</td>
+        </tr>
+        % end
+        <tr>
+            <td class="text-xs-left">
+                {{!p.tournament.flag_span}} <a href="#{{p.tournament.challo_url}}">{{p.tournament.name}}</a>
+            </td>
+            <td class="text-xs-right">
+                <span class="tag tag tag-primary">{{p.tournament.main_prop_short}}</span> {{p.rank_emoji}}
+            </td>
             <td class="text-xs-right">{{p.rank_text}}</td>
             <td class="text-xs-right" nowrap>{{p.tournament.date_string}}</td>
         </tr>
+        % pre_version = version
     % end
     </table>
 

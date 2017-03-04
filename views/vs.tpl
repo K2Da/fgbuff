@@ -10,7 +10,13 @@
     % for m in sorted(pool.matches.values(), key=attrgetter('end_at_desc', 'group_id', 'sort_key', 'id_desc')):
         % if tournament is None or tournament != m.tournament:
             <tr>
-                <th colspan="5">{{!m.tournament.flag_span}} {{! m.tournament.a}}</th>
+                <th colspan="1">{{!m.tournament.flag_span}} {{! m.tournament.a}}</th>
+                <td colspan="4" class="text-xs-left">
+                    <span class="tag tag tag-primary">{{m.tournament.version.short}}</span>
+                    % for p in m.tournament.props:
+                        <span class="tag tag tag-info">{{p.short}}</span>
+                    % end
+                </td>
                 <td colspan="1" class="text-xs-right">{{m.tournament.date_string}}</td>
             </tr>
         % end

@@ -19,7 +19,12 @@
                 {{len(winner)}} players
             % end
         </td>
-        <td style="vertical-align: middle;"><small>{{!t.labels_short}}</small></td>
+        <td style="vertical-align: middle;">
+            <span class="tag tag tag-primary">{{t.version.short}}</span>
+            % for p in t.props:
+                <span class="tag tag tag-info">{{p.short}}</span>
+            % end
+        </td>
         <td>{{t.date_string}}</td>
     </tr>
 % end
